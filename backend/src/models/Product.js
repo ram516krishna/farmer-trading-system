@@ -1,0 +1,25 @@
+import mongoose from "mongoose";
+
+const productSchema = new mongoose.Schema({
+  farmer: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Farmer',
+    required: true
+  },
+  productName:String,
+  weight:Number, // 50
+  rate:Number, // 15 rupya
+  bagQuantity:Number, //2 bora
+  status:{
+    type: String,
+    enum: ['pending', 'paid'],
+    default: 'pending'
+  },
+  material:{
+    type: String,
+    enum: ['makka', 'gehu', 'dhan', 'haldi'],
+    required: true,
+  }
+},{timestamps: true, versionKey: false});
+
+export default mongoose.model("Product", productSchema);
