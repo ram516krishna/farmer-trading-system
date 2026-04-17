@@ -1,6 +1,8 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const multer = require("multer");
+const dotenv = require("dotenv")
+dotenv.config()
 const fs = require("fs");
 
 const app = express();
@@ -15,7 +17,11 @@ const storage = multer.diskStorage({
 });
 const upload = multer({storage});
 
-mongoose.connect("mongodb://127.0.0.1:27017/farmerDB");
+mongoose.connect(process.env.DB_URL).then(()=>{
+  console.log("Database connected.")
+}).catch((error)=>{
+  console.log("Database connection error.")
+});
 
 const Farmer = mongoose.model("Farmer", {
   name:String,

@@ -1,130 +1,131 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-<title>Owner Dashboard</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="stylesheet" href="style.css">
-<link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#2e7d32">
+    <title>Owner Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#2e7d32">
 </head>
 
 <body>
 
-<div class="header">🧑‍💼 Owner Dashboard</div>
+    <div class="header">🧑‍💼 Owner Dashboard</div>
 
-<div class="container">
+    <div class="container">
 
-<!-- LOGIN BOX -->
-<div class="card" id="loginBox">
-<h3>🔐 Admin Login</h3>
-<input type="password" id="pass" placeholder="Enter Password">
-<button onclick="login()">Login</button>
-</div>
+        <!-- LOGIN BOX -->
+        <div class="card" id="loginBox">
+            <h3>🔐 Admin Login</h3>
+            <input type="password" id="pass" placeholder="Enter Password">
+            <button onclick="login()">Login</button>
+        </div>
 
-<!-- DASHBOARD -->
-<div id="dashboard" style="display:none;">
+        <!-- DASHBOARD -->
+        <div id="dashboard" style="display:none;">
 
-<!-- STATS -->
-<div class="stats">
-<div class="stat">📊 Total Deals: <span id="totalDeals">0</span></div>
-<div class="stat">💰 Total Earnings: ₹<span id="totalMoney">0</span></div>
-</div>
+            <!-- STATS -->
+            <div class="stats">
+                <div class="stat">📊 Total Deals: <span id="totalDeals">0</span></div>
+                <div class="stat">💰 Total Earnings: ₹<span id="totalMoney">0</span></div>
+            </div>
 
-<!-- FORM -->
-<div class="card">
-<h3 style="margin-bottom:15px;">➕ Add New Deal</h3>
+            <!-- FORM -->
+            <div class="card">
+                <h3 style="margin-bottom:15px;">➕ Add New Deal</h3>
 
-<form id="form" enctype="multipart/form-data">
+                <form id="form" enctype="multipart/form-data">
 
-<div class="grid">
-<input name="name" placeholder="Farmer Name">
-<input name="mobile" placeholder="Mobile">
+                    <div class="grid">
+                        <input name="name" placeholder="Farmer Name">
+                        <input name="mobile" placeholder="Mobile">
 
-<select name="product">
-<option>🌽 Maize</option>
-<option>🌾 Gehu</option>
-<option>🌿 Haldi</option>
-<option>🌾 Dhan</option>
-</select>
+                        <select name="product">
+                            <option>🌽 Maize</option>
+                            <option>🌾 Gehu</option>
+                            <option>🌿 Haldi</option>
+                            <option>🌾 Dhan</option>
+                        </select>
 
-<input name="packet" placeholder="Total Packet">
-<input name="weight" placeholder="Weight">
-<input name="rate" placeholder="Rate">
+                        <input name="packet" placeholder="Total Packet">
+                        <input name="weight" placeholder="Weight">
+                        <input name="rate" placeholder="Rate">
 
-<select name="status">
-<option>✅ Paid</option>
-<option>⏳ Pending</option>
-</select>
+                        <select name="status">
+                            <option>✅ Paid</option>
+                            <option>⏳ Pending</option>
+                        </select>
 
-<input type="date" name="date">
-</div>
+                        <input type="date" name="date">
+                    </div>
 
-<label>📎 Weight File</label>
-<input type="file" name="weightFile">
+                    <label>📎 Weight File</label>
+                    <input type="file" name="weightFile">
 
-<label>🧾 Parchi File</label>
-<input type="file" name="parchiFile">
+                    <label>🧾 Parchi File</label>
+                    <input type="file" name="parchiFile">
 
-<button type="submit">💾 Save Deal</button>
+                    <button type="submit">💾 Save Deal</button>
 
-</form>
-</div>
+                </form>
+            </div>
 
-<!-- TABLE -->
-<div class="card">
-<h3>📋 All Deals</h3>
+            <!-- TABLE -->
+            <div class="card">
+                <h3>📋 All Deals</h3>
 
-<table class="table" id="table">
-<tr>
-<th>Name</th>
-<th>Mobile</th>
-<th>Product</th>
-<th>Total</th>
-<th>Status</th>
-<th>Action</th>
-</tr>
-</table>
+                <table class="table" id="table">
+                    <tr>
+                        <th>Name</th>
+                        <th>Mobile</th>
+                        <th>Product</th>
+                        <th>Total</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </table>
 
-</div>
+            </div>
 
-</div>
+        </div>
 
-</div>
+    </div>
 
-<script>
+    <script>
 
-// LOGIN
-async function login(){
-let res = await fetch("/admin-login",{
-method:"POST",
-headers:{"Content-Type":"application/json"},
-body:JSON.stringify({password:pass.value})
-});
-let d = await res.json();
+        // LOGIN
+        async function login() {
+            let res = await fetch("/admin-login", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ password: pass.value })
+            });
+            let d = await res.json();
 
-if(d.success){
-loginBox.style.display="none";
-dashboard.style.display="block";
-load();
-}else alert("Wrong Password");
-}
+            if (d.success) {
+                loginBox.style.display = "none";
+                dashboard.style.display = "block";
+                load();
+            } else alert("Wrong Password");
+        }
 
-// SAVE
-form.onsubmit = async function(e){
-e.preventDefault();
-let fd=new FormData(this);
-let r=await fetch("/add",{method:"POST",body:fd});
-alert(await r.text());
-load();
-};
+        // SAVE
+        form.onsubmit = async function (e) {
+            e.preventDefault();
+            let fd = new FormData(this);
+            let r = await fetch("/add", { method: "POST", body: fd });
+            alert(await r.text());
+            load();
+        };
 
-async function load(){
-let res = await fetch("/data/ALL");
-let data = await res.json();
+        async function load() {
+            let res = await fetch("/data/ALL");
+            let data = await res.json();
 
-let table = document.getElementById("table");
+            let table = document.getElementById("table");
 
-table.innerHTML=`
+            table.innerHTML = `
 <tr>
 <th>Name</th>
 <th>Mobile</th>
@@ -134,18 +135,18 @@ table.innerHTML=`
 <th>Action</th>
 </tr>`;
 
-// ✅ ADD THESE
-let total = 0;
-let count = 0;
+            // ✅ ADD THESE
+            let total = 0;
+            let count = 0;
 
-data.forEach(d=>{
+            data.forEach(d => {
 
-let t = Number(d.total) || 0;  // ✅ safe number
+                let t = Number(d.total) || 0;  // ✅ safe number
 
-total += t;
-count++;
+                total += t;
+                count++;
 
-table.innerHTML+=`
+                table.innerHTML += `
 <tr id="row_${d._id}">
 <td>${d.name}</td>
 <td>${d.mobile}</td>
@@ -157,30 +158,30 @@ table.innerHTML+=`
 <button class="delete" onclick="deleteData('${d._id}')">❌</button>
 </td>
 </tr>`;
-});
+            });
 
-// ✅ FINAL UPDATE
-document.getElementById("totalDeals").innerText = count;
-document.getElementById("totalMoney").innerText = total;
-}
+            // ✅ FINAL UPDATE
+            document.getElementById("totalDeals").innerText = count;
+            document.getElementById("totalMoney").innerText = total;
+        }
 
-// DELETE (FIXED)
-async function deleteData(id){
-if(confirm("Delete?")){
-await fetch(`/delete/${id}`,{method:"DELETE"});
-load();
-}
-}
+        // DELETE (FIXED)
+        async function deleteData(id) {
+            if (confirm("Delete?")) {
+                await fetch(`/delete/${id}`, { method: "DELETE" });
+                load();
+            }
+        }
 
-// EDIT MODE
-function editRow(id){
-let row=document.getElementById("row_"+id);
-let cols=row.children;
+        // EDIT MODE
+        function editRow(id) {
+            let row = document.getElementById("row_" + id);
+            let cols = row.children;
 
-let name=cols[0].innerText;
-let mobile=cols[1].innerText;
+            let name = cols[0].innerText;
+            let mobile = cols[1].innerText;
 
-row.innerHTML=`
+            row.innerHTML = `
 <td><input value="${name}" id="name_${id}"></td>
 <td><input value="${mobile}" id="mobile_${id}"></td>
 <td>${cols[2].innerText}</td>
@@ -189,24 +190,25 @@ row.innerHTML=`
 <td>
 <button class="save" onclick="saveEdit('${id}')">💾</button>
 </td>`;
-}
+        }
 
-// SAVE EDIT
-async function saveEdit(id){
+        // SAVE EDIT
+        async function saveEdit(id) {
 
-let name=document.getElementById("name_"+id).value;
-let mobile=document.getElementById("mobile_"+id).value;
+            let name = document.getElementById("name_" + id).value;
+            let mobile = document.getElementById("mobile_" + id).value;
 
-await fetch(`/update/${id}`,{
-method:"PUT",
-headers:{"Content-Type":"application/json"},
-body:JSON.stringify({name,mobile})
-});
+            await fetch(`/update/${id}`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ name, mobile })
+            });
 
-load();
-}
+            load();
+        }
 
-</script>
+    </script>
 
 </body>
+
 </html>
