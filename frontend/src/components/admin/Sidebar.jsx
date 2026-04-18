@@ -8,15 +8,16 @@ const NAV_ITEMS = [
   {
     section: 'Main',
     links: [
-      { to: '/', label: 'Dashboard', icon: LayoutDashboard },
-      { to: '/add-deal', label: 'Add deal', icon: Plus },
-      { to: '/add-farmer', label: 'Add farmer', icon: UserPlus },
+      { to: '/admin-dashboard', label: 'Dashboard', icon: LayoutDashboard },
+      { to: '/admin-dashboard/add-deal', label: 'Add deal', icon: Plus },
+      { to: '/admin-dashboard/add-farmer', label: 'Add farmer', icon: UserPlus },
     ],
   },
   {
     section: 'Records',
     links: [
-      { to: '/list', label: 'All Deals', icon: List },
+      { to: '/admin-dashboard/list', label: 'All Deals', icon: List },
+      { to: '/admin-dashboard/all-farmers', label: 'All Farmers', icon: UserPlus },
     ],
   },
 ]

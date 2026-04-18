@@ -21,7 +21,7 @@ const FarmerLayout = () => {
       {/* Main content */}
       <div className="drawer-content flex-1">
         <main className="min-h-screen bg-base-200">
-          <div className="p-4 lg:p-6 lg:ml-64">
+          <div className="p-4 lg:p-6 ">
             <Outlet />
           </div>
         </main>

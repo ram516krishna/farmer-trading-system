@@ -1,4 +1,3 @@
-import React from 'react'
 
 const ViewModal = ({ product, onClose }) => {
   if (!product) return null

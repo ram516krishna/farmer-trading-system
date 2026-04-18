@@ -1,4 +1,5 @@
-import  Farmer from "../models/Farmer.js";
+import Farmer from "../models/Farmer.js";
+import Product from "../models/Product.js";
 
 export const addFarmer = async (req, res) => {
     try {
@@ -34,6 +35,25 @@ export const login = async (req, res) => {
             return res.status(400).json({ message: 'Farmer not found', success: false });
         }
         res.status(200).json({ data: farmer, success: true });
+    } catch (error) {
+        res.status(500).json({ message: error.message, success: false });
+    }
+};
+
+export const getFarmerProducts = async (req, res) => {
+    try {
+        const products = await Product.find({farmer: req.params.id}).populate('farmer');
+        res.status(200).json({ data: products, success: true });
+    } catch (error) {
+        res.status(500).json({ message: error.message, success: false });
+    }
+};
+
+export const getFarmerEarnings = async (req, res) => {
+    try {
+        const products = await Product.find({farmer: req.params.id});
+        const totalEarnings = products.reduce((total, product) => total + product.rate * product.weight* product.bagQuantity, 0);
+        res.status(200).json({ data: totalEarnings, success: true });
     } catch (error) {
         res.status(500).json({ message: error.message, success: false });
     }

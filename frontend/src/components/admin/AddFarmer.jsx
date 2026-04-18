@@ -44,22 +44,11 @@ const AddFarmer = () => {
   }
 
   return (
-    <div className="w-full max-w-2xl mx-auto p-6">
-      {/* Header with gradient background */}
-      <div className="bg-gradient-to-r from-success/10 to-info/10 rounded-2xl p-6 mb-6 border border-success/20">
-        <div className="flex items-center gap-4">
-          <div className="w-12 h-12 rounded-full bg-success/20 border border-success/30 flex items-center justify-center">
-            <User size={20} className="text-success" />
-          </div>
-          <div>
-            <h2 className="text-2xl font-bold text-base-content">Add New Farmer</h2>
-            <p className="text-sm text-base-content/60 mt-1">Register a new farmer's personal details in the system</p>
-          </div>
-        </div>
-      </div>
+    <div className="w-full mx-auto p-6">
+    
 
       {/* Form with card styling */}
-      <div className=" rounded-2xl border border-base-300 shadow-sm p-6">
+      
         <form onSubmit={handleSubmit} className="space-y-6">
 
           {/* Personal Information Section */}
@@ -194,7 +183,7 @@ const AddFarmer = () => {
           </div>
 
         </form>
-      </div>
+    
     </div>
   )
 }

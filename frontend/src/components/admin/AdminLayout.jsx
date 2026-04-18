@@ -3,6 +3,7 @@ import { Outlet } from 'react-router-dom'
 import Sidebar from './Sidebar'
 
 const AdminLayout = () => {
+ 
   return (
     <div className="drawer lg:drawer-open">
       <input id="my-drawer-3" type="checkbox" className="drawer-toggle" />

@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import { User, Package, IndianRupee, Weight, ShoppingBag, Calendar, TrendingUp } from 'lucide-react'
-import { useFarmer } from '../../contexts/FarmerContext'
 import toast from 'react-hot-toast'
 
 const FarmerHome = () => {
-  const { farmer } = useFarmer()
+  const [farmer, setFarmer] = useState(null)
   const [products, setProducts] = useState([])
   const [loading, setLoading] = useState(true)
   const [stats, setStats] = useState({
@@ -16,28 +15,39 @@ const FarmerHome = () => {
   })
 
   useEffect(() => {
-    const fetchFarmerProducts = async () => {
-      if (!farmer?._id) return
-      
+    // Get farmer data from localStorage
+    const farmerData = localStorage.getItem('farmer')
+    if (farmerData) {
       try {
-        const response = await fetch(`${import.meta.env.VITE_API_URL}/products/farmer/${farmer._id}`, {
-          credentials: 'include'
-        })
-        const data = await response.json()
-        if (data.success) {
-          setProducts(data.data)
-          calculateStats(data.data)
-        }
+        const parsedFarmer = JSON.parse(farmerData)
+        setFarmer(parsedFarmer)
+        fetchFarmerProducts(parsedFarmer._id)
       } catch (error) {
-        console.error('Error fetching products:', error)
-        toast.error('Failed to fetch products')
-      } finally {
+        console.error('Error parsing farmer data:', error)
         setLoading(false)
       }
+    } else {
+      setLoading(false)
     }
+  }, [])
 
-    fetchFarmerProducts()
-  }, [farmer])
+  const fetchFarmerProducts = async (farmerId) => {
+    try {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/products/farmer/${farmerId}`, {
+        credentials: 'include'
+      })
+      const data = await response.json()
+      if (data.success) {
+        setProducts(data.data)
+        calculateStats(data.data)
+      }
+    } catch (error) {
+      console.error('Error fetching products:', error)
+      toast.error('Failed to fetch products')
+    } finally {
+      setLoading(false)
+    }
+  }
 
   const calculateStats = (products) => {
     const stats = {
@@ -60,6 +70,18 @@ const FarmerHome = () => {
     )
   }
 
+  if (!farmer) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <div className="text-center">
+          <User size={48} className="text-base-content/30 mx-auto mb-4" />
+          <p className="text-base-content/60">No farmer data found</p>
+          <p className="text-sm text-base-content/40 mt-1">Please login again</p>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -70,7 +92,7 @@ const FarmerHome = () => {
           </div>
           <div>
             <h1 className="text-3xl font-bold text-base-content">
-              Welcome, {farmer?.name}!
+              Welcome, {farmer.name}!
             </h1>
             <p className="text-base text-base-content/60 mt-1">
               Here's your farming dashboard and product overview
@@ -80,7 +102,7 @@ const FarmerHome = () => {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <div className="stat bg-base-100 rounded-xl shadow-sm border border-base-300">
           <div className="stat-figure text-primary">
             <Package size={24} />
@@ -124,21 +146,21 @@ const FarmerHome = () => {
           <div className="space-y-3">
             <div>
               <span className="text-sm text-base-content/60">Full Name</span>
-              <p className="font-medium text-base-content">{farmer?.name}</p>
+              <p className="font-medium text-base-content">{farmer.name}</p>
             </div>
             <div>
               <span className="text-sm text-base-content/60">Father's Name</span>
-              <p className="font-medium text-base-content">{farmer?.fatherName}</p>
+              <p className="font-medium text-base-content">{farmer.fatherName}</p>
             </div>
             <div>
               <span className="text-sm text-base-content/60">Mobile Number</span>
-              <p className="font-medium text-base-content">{farmer?.mobile}</p>
+              <p className="font-medium text-base-content">{farmer.mobile}</p>
             </div>
           </div>
           <div className="space-y-3">
             <div className="col-span-2">
               <span className="text-sm text-base-content/60">Address</span>
-              <p className="font-medium text-base-content">{farmer?.address || 'Not provided'}</p>
+              <p className="font-medium text-base-content">{farmer.address || 'Not provided'}</p>
             </div>
           </div>
         </div>

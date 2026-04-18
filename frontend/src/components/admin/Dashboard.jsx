@@ -48,10 +48,10 @@ const Dashboard = () => {
 
   return (
     <div className="space-y-6">
-      <h2 className="text-2xl font-bold">Dashboard</h2>
+     
       
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2  gap-6">
         {/* Total Deals */}
         <div className="stat bg-base-100 shadow-lg rounded-lg">
           <div className="stat-figure text-primary">
@@ -68,7 +68,7 @@ const Dashboard = () => {
             <DollarSign className="w-8 h-8" />
           </div>
           <div className="stat-title">Total Earnings</div>
-          <div className="stat-value text-secondary">Rs. {stats.totalEarnings.toFixed(2)}</div>
+          <div className="stat-value text-secondary">{stats.totalEarnings.toFixed(2)}</div>
           <div className="stat-desc">From paid deals</div>
         </div>
 

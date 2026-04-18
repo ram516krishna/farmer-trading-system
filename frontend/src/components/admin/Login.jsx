@@ -48,12 +48,12 @@ const Login = () => {
         
         if (loginType === 'admin') {
           setAdmin(data.data)
-          navigate('/')
+          navigate('/admin-dashboard')
         } else {
           // Store farmer data in localStorage or context
           localStorage.setItem('farmer', JSON.stringify(data.data))
           // Redirect to farmer dashboard or home
-          navigate('/farmer')
+          navigate('/farmer-dashboard')
         }
       } else {
         toast.error(data.message || 'Login failed')
@@ -221,14 +221,7 @@ const Login = () => {
             )}
           </button>
 
-          {/* Default credentials hint for admin */}
-          {loginType === 'admin' && (
-            <div className="text-center mt-4">
-              <p className="text-xs text-base-content/50">
-                Default: admin@mail.com / 123456
-              </p>
-            </div>
-          )}
+         
         </form>
       </div>
     </div>

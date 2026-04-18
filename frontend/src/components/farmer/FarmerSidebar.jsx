@@ -1,14 +1,14 @@
-import React from 'react'
+
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { Home, Package, LogOut, User } from 'lucide-react'
-import { useFarmer } from '../../contexts/FarmerContext'
+
 
 const NAV_ITEMS = [
   {
     section: 'Main',
     links: [
-      { to: '/farmer/home', label: 'Dashboard', icon: Home },
-      { to: '/farmer/products', label: 'My Products', icon: Package },
+      { to: '/farmer-dashboard', label: 'Dashboard', icon: Home },
+      { to: '/farmer-dashboard/products', label: 'My Products', icon: Package },
     ],
   },
 ]
@@ -16,11 +16,13 @@ const NAV_ITEMS = [
 const FarmerSidebar = () => {
   const location = useLocation()
   const navigate = useNavigate()
-  const { farmer, logout } = useFarmer()
+  
+  const farmer = localStorage.getItem("farmer")
 
   const handleLogout = async () => {
-    await logout()
+    localStorage.removeItem("farmer")
     navigate('/login')
+
   }
 
   return (
