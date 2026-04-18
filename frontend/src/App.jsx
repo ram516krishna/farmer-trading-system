@@ -7,6 +7,8 @@ import Dashboard from './components/admin/Dashboard'
 import Login from './components/admin/Login'
 import ProtectedRoute from './components/admin/ProtectedRoute'
 import AllFarmers from './components/admin/AllFarmers'
+import NotFound from './components/NotFound'
+import LandingPage from './components/LandingPage'
 
 import FarmerLayout from './components/farmer/FarmerLayout'
 import FarmerHome from './components/farmer/FarmerHome'
@@ -17,7 +19,7 @@ const App = () => {
     
       <Router>
         <Routes>
-          <Route path="/" element={<div>Home Page</div>} />
+          <Route path="/" element={<LandingPage />} />
           {/* Login Route */}
           <Route path="/login" element={<Login />} />
           
@@ -39,6 +41,9 @@ const App = () => {
             <Route index element={<FarmerHome />} />
             <Route path= "products" element={<FarmerProducts/>} />
           </Route>
+
+          {/* 404 Catch All Route */}
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </Router>
    

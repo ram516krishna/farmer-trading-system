@@ -221,7 +221,16 @@ const Login = () => {
             )}
           </button>
 
-         
+          {/* Back to Home */}
+          <button
+            type="button"
+            onClick={() => navigate('/')}
+            className="btn btn-ghost w-full text-xs text-base-content/60 hover:text-base-content hover:bg-base-200"
+          >
+            <Home size={14} />
+            Back to Home
+          </button>
+
         </form>
       </div>
     </div>

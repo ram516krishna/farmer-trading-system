@@ -19,6 +19,14 @@ const FarmerSidebar = () => {
   
   const farmer = localStorage.getItem("farmer")
 
+  const closeMobileDrawer = () => {
+    // Close the mobile drawer by unchecking the checkbox
+    const drawerCheckbox = document.getElementById('my-drawer')
+    if (drawerCheckbox) {
+      drawerCheckbox.checked = false
+    }
+  }
+
   const handleLogout = async () => {
     localStorage.removeItem("farmer")
     navigate('/login')
@@ -58,6 +66,7 @@ const FarmerSidebar = () => {
                   <li key={linkIdx}>
                     <Link
                       to={link.to}
+                      onClick={closeMobileDrawer}
                       className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all ${
                         location.pathname === link.to
                           ? 'bg-primary text-primary-content'

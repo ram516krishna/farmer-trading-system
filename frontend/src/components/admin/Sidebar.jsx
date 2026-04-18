@@ -27,6 +27,14 @@ const Sidebar = () => {
   const navigate = useNavigate()
   const { admin, setAdmin } = useAdmin()
 
+  const closeMobileDrawer = () => {
+    // Close the mobile drawer by unchecking the checkbox
+    const drawerCheckbox = document.getElementById('my-drawer-3')
+    if (drawerCheckbox) {
+      drawerCheckbox.checked = false
+    }
+  }
+
   const handleLogout = async () => {
     try {
       await fetch(`${import.meta.env.VITE_API_URL}/admin/logout`, {
@@ -77,6 +85,7 @@ const Sidebar = () => {
                   <li key={to}>
                     <Link
                       to={to}
+                      onClick={closeMobileDrawer}
                       className={`
                         flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm transition-colors
                         ${isActive

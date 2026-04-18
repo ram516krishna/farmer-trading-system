@@ -159,7 +159,7 @@ const AddDeal = () => {
       : null
 
   return (
-    <div className="w-full  p-6">
+    <div className="w-full">
 
 
       <form onSubmit={handleSubmit} className="space-y-4">

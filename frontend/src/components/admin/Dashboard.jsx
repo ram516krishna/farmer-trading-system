@@ -1,10 +1,14 @@
 import React, { useState, useEffect } from 'react'
 import toast from 'react-hot-toast'
-import { Info, DollarSign, Package, Weight, TrendingUp } from 'lucide-react'
+import { Info, Unlock, Package, Weight, Eye, EyeOff, Lock } from 'lucide-react'
 
 const Dashboard = () => {
   const [stats, setStats] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [showEarnings, setShowEarnings] = useState(false)
+  const [showPasswordModal, setShowPasswordModal] = useState(false)
+  const [password, setPassword] = useState('')
+  const [passwordError, setPasswordError] = useState('')
 
   const fetchDashboardStats = async () => {
     try {
@@ -29,6 +33,39 @@ const Dashboard = () => {
   useEffect(() => {
     fetchDashboardStats()
   }, [])
+
+  const handleEarningsClick = () => {
+    if (!showEarnings) {
+      setShowPasswordModal(true)
+      setPassword('')
+      setPasswordError('')
+    }
+  }
+
+  const validatePassword = () => {
+    // Simple password validation - you can change this to any password you want
+    if (password === '2000') {
+      setShowEarnings(true)
+      setShowPasswordModal(false)
+      setPassword('')
+      setPasswordError('')
+      toast.success('Earnings unlocked successfully')
+    } else {
+      setPasswordError('Incorrect password')
+      toast.error('Invalid password')
+    }
+  }
+
+  const handlePasswordSubmit = (e) => {
+    e.preventDefault()
+    validatePassword()
+  }
+
+  const handlePasswordModalClose = () => {
+    setShowPasswordModal(false)
+    setPassword('')
+    setPasswordError('')
+  }
 
   if (loading) {
     return (
@@ -63,13 +100,29 @@ const Dashboard = () => {
         </div>
 
         {/* Total Earnings */}
-        <div className="stat bg-base-100 shadow-lg rounded-lg">
+        <div 
+          className={`stat bg-base-100 shadow-lg rounded-lg cursor-pointer transition-all duration-300 ${
+            !showEarnings ? 'hover:bg-base-200' : ''
+          }`}
+          onClick={handleEarningsClick}
+        >
           <div className="stat-figure text-secondary">
-            <DollarSign className="w-8 h-8" />
+            {showEarnings ? <Unlock className="w-8 h-8" onClick={()=>setShowEarnings(false)}/> : <Lock className="w-8 h-8" />}
           </div>
-          <div className="stat-title">Total Earnings</div>
-          <div className="stat-value text-secondary">{stats.totalEarnings.toFixed(2)}</div>
-          <div className="stat-desc">From paid deals</div>
+          <div className="stat-title flex items-center gap-2">
+            Total Earnings
+            {!showEarnings && <Eye size={16} className="text-base-content/40" />}
+          </div>
+          <div className="stat-value text-secondary">
+            {showEarnings ? (
+              <span>{stats.totalEarnings.toFixed(2)}</span>
+            ) : (
+              <span className="text-base-content/30">***.**</span>
+            )}
+          </div>
+          <div className="stat-desc">
+            {showEarnings ? 'From paid deals' : 'Click to unlock'}
+          </div>
         </div>
 
         {/* Total Bags */}
@@ -171,6 +224,64 @@ const Dashboard = () => {
           </table>
         </div>
       </div>
+
+      {/* Password Modal */}
+      {showPasswordModal && (
+        <div className="modal modal-open">
+          <div className="modal-box relative">
+            <button
+              className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
+              onClick={handlePasswordModalClose}
+            >
+              <EyeOff size={16} />
+            </button>
+            
+            <h3 className="font-bold text-lg flex items-center gap-2">
+              <Lock size={20} className="text-warning" />
+              Unlock Earnings
+            </h3>
+            
+            <p className="py-2 text-sm text-base-content/60">
+              Enter password to view total earnings data
+            </p>
+            
+            <form onSubmit={handlePasswordSubmit} className="space-y-4">
+              <div className="form-control">
+                <label className="label">
+                  <span className="label-text text-sm font-medium">Password</span>
+                </label>
+                <input
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Enter password"
+                  className="input input-bordered w-full"
+                  autoFocus
+                />
+                {passwordError && (
+                  <label className="label">
+                    <span className="label-text-alt text-error text-xs">{passwordError}</span>
+                  </label>
+                )}
+              </div>
+              
+              <div className="modal-action">
+                <button
+                  type="button"
+                  className="btn btn-ghost"
+                  onClick={handlePasswordModalClose}
+                >
+                  Cancel
+                </button>
+                <button type="submit" className="btn btn-primary">
+                  Unlock
+                </button>
+              </div>
+            </form>
+          </div>
+          <div className="modal-backdrop" onClick={handlePasswordModalClose}></div>
+        </div>
+      )}
     </div>
   )
 }
