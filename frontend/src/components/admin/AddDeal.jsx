@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import toast from 'react-hot-toast'
-import { Package, Weight, IndianRupee, ShoppingBag, User, Phone, MapPin, Tag, ChevronDown, ChevronUp } from 'lucide-react'
+import { Package, Weight, IndianRupee, ShoppingBag, User, Phone, MapPin, Tag, ChevronDown, ChevronUp, Upload } from 'lucide-react'
 
 const DEAL_INITIAL = {
   farmer: '',
@@ -10,6 +10,7 @@ const DEAL_INITIAL = {
   bagQuantity: '',
   material: '',
   status: 'pending',
+  receipt: null,
 }
 
 const FARMER_INITIAL = {
@@ -87,6 +88,13 @@ const AddDeal = () => {
     setDealForm(prev => ({ ...prev, [name]: value }))
   }
 
+  const handleFileChange = (e) => {
+    const file = e.target.files[0]
+    if (file) {
+      setDealForm(prev => ({ ...prev, receipt: file }))
+    }
+  }
+
   const handleFarmerChange = (e) => {
     const { name, value } = e.target
     setFarmerForm(prev => ({ ...prev, [name]: value }))
@@ -132,11 +140,24 @@ const AddDeal = () => {
     }
     setLoading(true)
     try {
+      const formData = new FormData()
+      
+      // Add all deal form fields except receipt
+      Object.keys(dealForm).forEach(key => {
+        if (key !== 'receipt') {
+          formData.append(key, dealForm[key])
+        }
+      })
+      
+      // Add receipt file if it exists
+      if (dealForm.receipt) {
+        formData.append('receipt', dealForm.receipt)
+      }
+      
       const res = await fetch(`${import.meta.env.VITE_API_URL}/products`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
-        body: JSON.stringify(dealForm),
+        body: formData,
       })
       const data = await res.json()
       if (data.success) {
@@ -394,7 +415,7 @@ const AddDeal = () => {
         <div className="border border-base-300 rounded-2xl overflow-hidden">
           <SectionHeader step="3" color="blue" title="Packaging & payment" subtitle="Bag count and settlement status" />
 
-          <div className="p-4">
+          <div className="p-4 space-y-3">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               <div className="form-control">
                 <label className="label py-0 mb-1.5">
@@ -428,6 +449,33 @@ const AddDeal = () => {
                   <option value="paid">Paid</option>
                 </select>
               </div>
+            </div>
+
+            {/* Receipt Upload */}
+            <div className="form-control">
+              <label className="label py-0 mb-1.5">
+                <span className="label-text text-xs font-medium">Receipt (optional)</span>
+              </label>
+              <div className="flex flex-col gap-2">
+                <label className="flex items-center gap-2.5 px-3 py-2 border border-base-300 rounded-lg cursor-pointer hover:border-info/50 transition-colors">
+                  <Upload size={14} className="text-base-content/40 shrink-0" />
+                  <input
+                    type="file"
+                    onChange={handleFileChange}
+                    className="hidden"
+                  />
+                  <span className="text-sm text-base-content/60">
+                    {dealForm.receipt ? dealForm.receipt.name : 'Choose receipt image or PDF'}
+                  </span>
+                </label>
+                
+              
+              </div>
+              <label className="label py-0">
+                <span className="label-text-alt text-xs text-base-content/50">
+                  Upload receipt image (max 5MB, JPG/PNG)
+                </span>
+              </label>
             </div>
           </div>
         </div>

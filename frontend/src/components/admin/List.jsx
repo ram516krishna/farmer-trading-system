@@ -1,169 +1,215 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
+import {
+  useReactTable,
+  getCoreRowModel,
+  flexRender,
+  createColumnHelper,
+} from '@tanstack/react-table'
 import toast from 'react-hot-toast'
-import { Eye, Pencil, Trash2 } from 'lucide-react'
+import { Eye, Pencil, Trash2, Download } from 'lucide-react'
 import ViewModal from './ViewModal'
 import DeleteModal from './DeleteModal'
 import EditDealModal from './EditDealModal'
+import { deleteProduct, fetchProducts } from '../../api/products'
 
+const columnHelper = createColumnHelper()
+const LIMIT = 10
+
+
+// --- Component ---
 const List = () => {
-  const [products, setProducts] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [selectedproduct, setSelectedproduct] = useState(null)
-  const [activeModal, setActiveModal] = useState(null) // 'view' | 'delete' | 'edit'
+  const queryClient = useQueryClient()
+  const [page, setPage] = useState(1)
+  const [selectedProduct, setSelectedProduct] = useState(null)
+  const [activeModal, setActiveModal] = useState(null)
 
-  const fetchproducts = async () => {
-    try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/products`,{
-        credentials: "include"
-      })
-      const data = await response.json()
-      if (data.success) {
-        setProducts(data.data)
-      } else {
-        console.error('Failed to fetch products')
-      }
-    } catch (error) {
-      console.error('Error fetching products:', error)
-    } finally {
-      setLoading(false)
-    }
-  }
+  const { data, isLoading } = useQuery({
+    queryKey: ['products', page],
+    queryFn: () => fetchProducts({ page, limit: LIMIT }),
+    keepPreviousData: true,
+  })
 
-  useEffect(() => {
-    fetchproducts()
-  }, [])
+  const products = data?.data ?? []
+  const pagination = data?.pagination
 
   const openModal = (type, product) => {
-    setSelectedproduct(product)
+    setSelectedProduct(product)
     setActiveModal(type)
   }
 
   const closeModal = () => {
-    setSelectedproduct(null)
+    setSelectedProduct(null)
     setActiveModal(null)
   }
 
   const handleDelete = async (id) => {
     try {
-      const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/products/${id}`,
-        { method: 'DELETE', credentials: "include" }
-      )
-      const data = await response.json()
-      if (data.success) {
-        setProducts((prev) => prev.filter((f) => f._id !== id))
-        toast.success('product deleted successfully')
-      } else {
-        toast.error('Failed to delete product')
-      }
-    } catch (err) {
-      console.error(err)
+      await deleteProduct(id)
+      queryClient.setQueryData(['products', page], (prev) => ({
+        ...prev,
+        data: prev.data.filter((p) => p._id !== id),
+      }))
+      toast.success('Product deleted successfully')
+    } catch {
       toast.error('Something went wrong')
     }
   }
 
   const handleSave = () => {
-    fetchproducts();
+    queryClient.invalidateQueries({ queryKey: ['products'] })
   }
 
-  if (loading) {
+  const columns = [
+    columnHelper.accessor('farmer.name', {
+      header: 'Name',
+      cell: (info) => <span className="font-medium">{info.getValue()}</span>,
+    }),
+    columnHelper.accessor('farmer.fatherName', { header: 'Father Name' }),
+    columnHelper.accessor('farmer.mobile', { header: 'Mobile' }),
+    columnHelper.accessor('productName', {
+      header: 'Product',
+      cell: (info) => info.getValue() || '-',
+    }),
+    columnHelper.accessor('weight', {
+      header: 'Weight (kg)',
+      cell: (info) => info.getValue() || '-',
+    }),
+    columnHelper.accessor('rate', {
+      header: 'Rate (₹/kg)',
+      cell: (info) => info.getValue() || '-',
+    }),
+    columnHelper.accessor('bagQuantity', {
+      header: 'Bags',
+      cell: (info) => info.getValue() || '-',
+    }),
+    columnHelper.accessor('material', {
+      header: 'Material',
+      cell: (info) => (
+        <span className="badge badge-ghost badge-sm">{info.getValue()}</span>
+      ),
+    }),
+    columnHelper.accessor('status', {
+      header: 'Status',
+      cell: (info) => (
+        <span className={`badge badge-sm ${info.getValue() === 'paid' ? 'badge-success' : 'badge-warning'}`}>
+          {info.getValue()}
+        </span>
+      ),
+    }),
+    columnHelper.accessor('receipt', {
+      header: 'Receipt',
+      cell: (info) => {
+        const receipt = info.getValue()
+        if (receipt?.url) {
+          return (
+            <a
+              href={receipt.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn btn-ghost btn-xs text-info hover:text-info/80"
+              title="View receipt"
+            >
+              <Download size={14} />
+            </a>
+          )
+        }
+        return <span className="text-base-content/30">-</span>
+      },
+    }),
+    columnHelper.display({
+      id: 'actions',
+      header: 'Actions',
+      cell: ({ row }) => (
+        <div className="flex items-center gap-1">
+          <button className="btn btn-ghost btn-xs text-info" onClick={() => openModal('view', row.original)}><Eye size={14} /></button>
+          <button className="btn btn-ghost btn-xs text-success" onClick={() => openModal('edit', row.original)}><Pencil size={14} /></button>
+          <button className="btn btn-ghost btn-xs text-error" onClick={() => openModal('delete', row.original)}><Trash2 size={14} /></button>
+        </div>
+      ),
+    }),
+  ]
+
+  const table = useReactTable({
+    data: products,
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+  })
+
+  if (isLoading) {
     return (
       <div className="flex justify-center items-center h-64">
-        <div className="loading loading-spinner loading-lg"></div>
+        <div className="loading loading-spinner loading-lg" />
       </div>
     )
   }
 
   return (
-    <div className="overflow-x-auto">
+    <div className="space-y-4">
+      <div className="overflow-x-auto">
+        {products.length === 0 ? (
+          <div className="text-center py-8">
+            <p className="text-gray-500">No products found</p>
+          </div>
+        ) : (
+          <table className="table table-zebra w-full">
+            <thead>
+              {table.getHeaderGroups().map((headerGroup) => (
+                <tr key={headerGroup.id}>
+                  {headerGroup.headers.map((header) => (
+                    <th key={header.id}>
+                      {flexRender(header.column.columnDef.header, header.getContext())}
+                    </th>
+                  ))}
+                </tr>
+              ))}
+            </thead>
+            <tbody>
+              {table.getRowModel().rows.map((row) => (
+                <tr key={row.id}>
+                  {row.getVisibleCells().map((cell) => (
+                    <td key={cell.id}>
+                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
+      </div>
 
-      {products.length === 0 ? (
-        <div className="text-center py-8">
-          <p className="text-gray-500">No products found</p>
+      {/* Pagination Controls */}
+      {pagination && (
+        <div className="flex items-center justify-between px-1">
+          <span className="text-sm text-base-content/60">
+            Page {pagination.page} of {pagination.totalPages} — {pagination.total} products
+          </span>
+          <div className="join">
+            <button
+              className="join-item btn btn-sm"
+              onClick={() => setPage((p) => p - 1)}
+              disabled={!pagination.hasPrevPage}
+            >
+              «
+            </button>
+            <button className="join-item btn btn-sm btn-active">
+              {pagination.page}
+            </button>
+            <button
+              className="join-item btn btn-sm"
+              onClick={() => setPage((p) => p + 1)}
+              disabled={!pagination.hasNextPage}
+            >
+              »
+            </button>
+          </div>
         </div>
-      ) : (
-        <table className="table table-zebra w-full">
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Father Name</th>
-              <th>Mobile</th>
-              <th>Product</th>
-              <th>Weight (kg)</th>
-              <th>Rate (₹/kg)</th>
-              <th>Bags</th>
-              <th>Material</th>
-              <th>Status</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {products.map((product, index) => (
-              <tr key={product._id || index}>
-                <td className="font-medium">{product.farmer?.name}</td>
-                <td>{product.farmer?.fatherName}</td>
-                <td>{product.farmer?.mobile}</td>
-                <td>{product.productName || '-'}</td>
-                <td>{product.weight || '-'}</td>
-                <td>{product.rate || '-'}</td>
-                <td>{product.bagQuantity || '-'}</td>
-                <td>
-                  <span className="badge badge-ghost badge-sm">{product.material}</span>
-                </td>
-                <td>
-                  <span
-                    className={`badge badge-sm ${
-                      product.status === 'paid' ? 'badge-success' : 'badge-warning'
-                    }`}
-                  >
-                    {product.status}
-                  </span>
-                </td>
-                <td>
-                  <div className="flex items-center gap-1">
-                    <button
-                      className="btn btn-ghost btn-xs text-info"
-                      onClick={() => openModal('view', product)}
-                      title="View"
-                    >
-                      <Eye size={14} />
-                    </button>
-                    <button
-                      className="btn btn-ghost btn-xs text-success"
-                      onClick={() => openModal('edit', product)}
-                      title="Edit"
-                    >
-                      <Pencil size={14} />
-                    </button>
-                    <button
-                      className="btn btn-ghost btn-xs text-error"
-                      onClick={() => openModal('delete', product)}
-                      title="Delete"
-                    >
-                      <Trash2 size={14} />
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
       )}
 
-      <ViewModal
-        product={activeModal === 'view' ? selectedproduct : null}
-        onClose={closeModal}
-      />
-      <DeleteModal
-        product={activeModal === 'delete' ? selectedproduct : null}
-        onConfirm={handleDelete}
-        onClose={closeModal}
-      />
-      <EditDealModal
-        product={activeModal === 'edit' ? selectedproduct : null}
-        onSave={handleSave}
-        onClose={closeModal}
-      />
+      <ViewModal product={activeModal === 'view' ? selectedProduct : null} onClose={closeModal} />
+      <DeleteModal product={activeModal === 'delete' ? selectedProduct : null} onConfirm={handleDelete} onClose={closeModal} />
+      <EditDealModal product={activeModal === 'edit' ? selectedProduct : null} onSave={handleSave} onClose={closeModal} />
     </div>
   )
 }

@@ -22,6 +22,7 @@ connectDB();
 app.use("/products", productRouter)
 app.use("/admin", adminRouter)
 app.use("/farmers", farmerRouter)
+
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });

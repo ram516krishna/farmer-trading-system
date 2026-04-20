@@ -1,4 +1,5 @@
 import Product from "../models/Product.js";
+import { uploadToCloudinary, deleteFromCloudinary } from "../utils/cloudinary.js";
 
 export const addProduct = async (req, res) => {
     try {
@@ -8,7 +9,20 @@ export const addProduct = async (req, res) => {
             return res.status(400).json({ message: "All fields are required", success: false });
         }
         
+        if(req.file){
+            const receipt = await uploadToCloudinary(req.file.path);
+           
+            if(!receipt){
+                return res.status(500).json({ message: "Failed to upload receipt", success: false });
+            }
+            req.body.receipt = {
+                url:receipt.url,
+                public_id:receipt.public_id
+            };
+        }
+
         const product = await Product.create(req.body);
+
         res.json({ data: product, success: true });
     } catch (error) {
         res.status(500).json({ message: error.message, success: false });
@@ -17,8 +31,27 @@ export const addProduct = async (req, res) => {
 
 export const getAllProducts = async (req, res) => {
     try {
-        const products = await Product.find().populate('farmer').sort({_id:-1});
-        res.status(200).json({ data: products, success: true });
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 10;
+        const skip = (page - 1) * limit;
+
+        const [products, total] = await Promise.all([
+            Product.find().skip(skip).limit(limit).populate('farmer').sort({ _id: -1 }),
+            Product.countDocuments()
+        ]);
+
+        res.status(200).json({
+            data: products,
+            pagination: {
+                total,
+                page,
+                limit,
+                totalPages: Math.ceil(total / limit),
+                hasNextPage: page < Math.ceil(total / limit),
+                hasPrevPage: page > 1
+            },
+            success: true
+        });
     } catch (error) {
         res.status(500).json({ message: error.message, success: false });
     }
@@ -91,6 +124,10 @@ export const getDashboardStats = async (req, res) => {
 
 export const deleteProduct = async (req, res) => {
     try {
+        const product = await Product.findById(req.params.id);
+        if (product?.receipt?.public_id) {
+            await deleteFromCloudinary(product.receipt.public_id);
+        }
         await Product.findByIdAndDelete(req.params.id);
         res.json({ message: "Product deleted successfully", success: true });
     } catch (error) {

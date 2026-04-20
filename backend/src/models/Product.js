@@ -19,6 +19,10 @@ const productSchema = new mongoose.Schema({
     type: String,
     enum: ['makka', 'gehu', 'dhan', 'haldi'],
     required: true,
+  },
+  receipt:{
+     url: String,
+     public_id: String
   }
 },{timestamps: true, versionKey: false});
 

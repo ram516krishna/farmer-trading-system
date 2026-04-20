@@ -10,6 +10,9 @@ const env = {
   JWT_SECRET: process.env.JWT_SECRET || "your_jwt_secret_key",
   ADMIN_EMAIL: process.env.ADMIN_EMAIL || "admin@mail.com",
   ADMIN_PASSWORD: process.env.ADMIN_PASSWORD || "123456",
+  CLOUD_NAME: process.env.CLOUD_NAME || "",
+  API_KEY: process.env.API_KEY || "",
+  API_SECRET: process.env.API_SECRET || "",
 };
 
 export default env;
