@@ -99,3 +99,27 @@ export const getFarmerEarnings = async (req, res) => {
     }
 };
 
+export const deleteFarmer = async (req, res) => {
+    try {
+        // Check if farmer exists
+        const farmer = await Farmer.findById(req.params.id);
+        if (!farmer) {
+            return res.status(404).json({ message: 'Farmer not found', success: false });
+        }
+
+        // Check if farmer has any associated products (deals)
+        const associatedProducts = await Product.find({ farmer: req.params.id });
+        if (associatedProducts.length > 0) {
+            return res.status(400).json({ 
+                message: `Cannot delete farmer. ${associatedProducts.length} deal(s) are associated with this farmer. Please delete all deals first.`,
+                success: false 
+            });
+        }
+
+        // Delete the farmer if no associated deals
+        const deletedFarmer = await Farmer.findByIdAndDelete(req.params.id);
+        res.status(200).json({ data: deletedFarmer, success: true });
+    } catch (error) {
+        res.status(500).json({ message: error.message, success: false });
+    }
+};

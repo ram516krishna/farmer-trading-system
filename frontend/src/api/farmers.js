@@ -18,3 +18,23 @@ export const fetchEarnings = async (farmerId) => {
   if (!data.success) throw new Error('Failed to fetch earnings')
   return data.data
 }
+
+export const deleteFarmer = async (farmerId) => {
+  const res = await fetch(
+    `${import.meta.env.VITE_API_URL}/farmers/${farmerId}`,
+    { 
+      method: 'DELETE',
+      credentials: 'include'
+    }
+  )
+
+  const data = await res.json()
+
+  if(!res.ok){
+    
+    throw new Error(data.message || 'Failed to delete farmer')
+  }
+
+
+  return data
+}

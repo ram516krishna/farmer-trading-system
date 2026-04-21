@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
-import { LayoutDashboard, Plus, List, Home, LogOut, UserPlus } from 'lucide-react'
+import { LayoutDashboard, Plus, List, Home, LogOut, UserPlus, CreditCard } from 'lucide-react'
 import toast from 'react-hot-toast'
 import { useAdmin } from '../../context/AdminContext'
 
@@ -11,6 +11,7 @@ const NAV_ITEMS = [
       { to: '/admin-dashboard', label: 'Dashboard', icon: LayoutDashboard },
       { to: '/admin-dashboard/add-deal', label: 'Add deal', icon: Plus },
       { to: '/admin-dashboard/add-farmer', label: 'Add farmer', icon: UserPlus },
+      { to: '/admin-dashboard/add-payments', label: 'Add Payments', icon: CreditCard },
     ],
   },
   {

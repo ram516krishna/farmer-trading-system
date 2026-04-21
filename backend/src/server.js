@@ -6,6 +6,7 @@ import env from "./config/env.js";
 import cookieParser from "cookie-parser";
 import adminRouter from "./routes/adminRoutes.js";
 import farmerRouter from "./routes/farmerRoutes.js";
+import paymentRouter from "./routes/paymentRoutes.js";
 
 const app = express();
 const PORT = env.PORT;
@@ -22,6 +23,7 @@ connectDB();
 app.use("/products", productRouter)
 app.use("/admin", adminRouter)
 app.use("/farmers", farmerRouter)
+app.use("/payments", paymentRouter)
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);

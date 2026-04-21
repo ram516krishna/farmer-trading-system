@@ -67,10 +67,6 @@ const List = () => {
     }),
     columnHelper.accessor('farmer.fatherName', { header: 'Father Name' }),
     columnHelper.accessor('farmer.mobile', { header: 'Mobile' }),
-    columnHelper.accessor('productName', {
-      header: 'Product',
-      cell: (info) => info.getValue() || '-',
-    }),
     columnHelper.accessor('weight', {
       header: 'Weight (kg)',
       cell: (info) => info.getValue() || '-',
@@ -208,7 +204,15 @@ const List = () => {
       )}
 
       <ViewModal product={activeModal === 'view' ? selectedProduct : null} onClose={closeModal} />
-      <DeleteModal product={activeModal === 'delete' ? selectedProduct : null} onConfirm={handleDelete} onClose={closeModal} />
+      <DeleteModal 
+        isOpen={activeModal === 'delete'}
+        item={selectedProduct}
+        title="Delete Deal?"
+        message={`This will permanently remove ${selectedProduct?.material || 'this deal'} and all associated records. This action cannot be undone.`}
+        confirmText="Delete Deal"
+        onConfirm={handleDelete}
+        onClose={closeModal}
+      />
       <EditDealModal product={activeModal === 'edit' ? selectedProduct : null} onSave={handleSave} onClose={closeModal} />
     </div>
   )

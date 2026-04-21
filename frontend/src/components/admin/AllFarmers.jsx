@@ -1,27 +1,34 @@
 import  { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
+import { useNavigate } from 'react-router-dom'
 import {
   useReactTable,
   getCoreRowModel,
   flexRender,
   createColumnHelper,
 } from '@tanstack/react-table'
-import { User, Eye, IndianRupee } from 'lucide-react'
+import { User, Eye, IndianRupee, Trash2, CreditCard } from 'lucide-react'
 import toast from 'react-hot-toast'
-import { fetchEarnings, fetchFarmers } from '../../api/farmers'
+import { fetchEarnings, fetchFarmers, deleteFarmer } from '../../api/farmers'
+import DeleteModal from './DeleteModal'
+
 
 const columnHelper = createColumnHelper()
 
 
 // --- Component ---
 const AllFarmers = () => {
+  const navigate = useNavigate()
   const [page, setPage] = useState(1)
   const [earnings, setEarnings] = useState({})
   const [loadingEarnings, setLoadingEarnings] = useState({})
+  const [deleteModal, setDeleteModal] = useState(null)
+  const [deleting, setDeleting] = useState(false)
+
   const limit = 10
 
   // TanStack Query — fetch farmers
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, refetch } = useQuery({
     queryKey: ['farmers', page],
     queryFn: () => fetchFarmers({ page, limit }),
     keepPreviousData: true, // smooth pagination, no flash
@@ -43,6 +50,30 @@ const AllFarmers = () => {
     } finally {
       setLoadingEarnings(prev => ({ ...prev, [farmerId]: false }))
     }
+  }
+
+  // Handle delete farmer
+  const handleDeleteFarmer = async (farmerId) => {
+    setDeleting(true)
+    try {
+      await deleteFarmer(farmerId)
+      toast.success('Farmer deleted successfully')
+      refetch()
+    } catch (error) {
+      toast.error(error.message || 'Failed to delete farmer')
+    } finally {
+      setDeleting(false)
+    }
+  }
+
+  // Open delete modal
+  const openDeleteModal = (farmer) => {
+    setDeleteModal(farmer)
+  }
+
+  // Close delete modal
+  const closeDeleteModal = () => {
+    setDeleteModal(null)
   }
 
   // TanStack Table — column definitions
@@ -79,19 +110,38 @@ const AllFarmers = () => {
     }),
     columnHelper.display({
       id: 'actions',
-      header: 'View',
+      header: 'Actions',
       cell: ({ row }) => {
-        const farmerId = row.original._id
+        const farmer = row.original
+        const farmerId = farmer._id
         return (
-          <button
-            className="btn btn-ghost btn-xs text-info"
-            onClick={() => handleFetchEarnings(farmerId)}
-            disabled={loadingEarnings[farmerId]}
-          >
-            {loadingEarnings[farmerId]
-              ? <span className="loading loading-spinner loading-xs" />
-              : <Eye size={14} />}
-          </button>
+          <div className="flex gap-1">
+            <button
+              className="btn btn-ghost btn-xs text-info"
+              onClick={() => handleFetchEarnings(farmerId)}
+              disabled={loadingEarnings[farmerId]}
+              title="View Earnings"
+            >
+              {loadingEarnings[farmerId]
+                ? <span className="loading loading-spinner loading-xs" />
+                : <Eye size={14} />}
+            </button>
+            <button
+              className="btn btn-ghost btn-xs text-warning"
+              onClick={() => navigate(`/admin-dashboard/farmer-payments/${farmerId}`)}
+              title="View Payments"
+            >
+              <CreditCard size={14} />
+            </button>
+            <button
+              className="btn btn-ghost btn-xs text-error"
+              onClick={() => openDeleteModal(farmer)}
+              disabled={deleting}
+              title="Delete Farmer"
+            >
+              <Trash2 size={14} />
+            </button>
+          </div>
         )
       },
     }),
@@ -179,6 +229,19 @@ const AllFarmers = () => {
           </>
         )}
       </div>
+      
+      {/* Delete Modal */}
+      <DeleteModal 
+        isOpen={!!deleteModal}
+        item={deleteModal}
+        title="Delete Farmer?"
+        message={`This will permanently remove ${deleteModal?.name || 'this farmer'} and all associated records. This action cannot be undone.`}
+        confirmText="Delete Farmer"
+        onConfirm={handleDeleteFarmer}
+        onClose={closeDeleteModal}
+      />
+
+    
     </div>
   )
 }

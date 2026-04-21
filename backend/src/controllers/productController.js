@@ -3,9 +3,9 @@ import { uploadToCloudinary, deleteFromCloudinary } from "../utils/cloudinary.js
 
 export const addProduct = async (req, res) => {
     try {
-        const { farmer, productName, weight, rate, bagQuantity, status, material } = req.body;
+        const { farmer,  weight, rate, bagQuantity, status, material } = req.body;
 
-        if(!farmer || !productName || !weight || !rate || !bagQuantity || !status || !material) {
+        if(!farmer || !weight || !rate || !bagQuantity || !status || !material) {
             return res.status(400).json({ message: "All fields are required", success: false });
         }
         

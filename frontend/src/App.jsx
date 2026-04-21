@@ -1,52 +1,123 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
-import AdminLayout from './components/admin/AdminLayout'
-import AddDeal from './components/admin/AddDeal'
-import AddFarmer from './components/admin/AddFarmer'
-import List from './components/admin/List'
-import Dashboard from './components/admin/Dashboard'
-import Login from './components/admin/Login'
-import ProtectedRoute from './components/admin/ProtectedRoute'
-import AllFarmers from './components/admin/AllFarmers'
-import NotFound from './components/NotFound'
-import LandingPage from './components/LandingPage'
+import { BrowserRouter as Router, Routes, Route} from 'react-router-dom'
+import { lazy, Suspense } from 'react'
+import LoadingSpinner from './components/LoadingSpinner'
 
-import FarmerLayout from './components/farmer/FarmerLayout'
-import FarmerHome from './components/farmer/FarmerHome'
-import FarmerProducts from "./components/farmer/FarmerProducts"
+// Lazy loaded admin components
+const AdminLayout = lazy(() => import('./components/admin/AdminLayout'))
+const AddDeal = lazy(() => import('./components/admin/AddDeal'))
+const AddFarmer = lazy(() => import('./components/admin/AddFarmer'))
+const AddPayments = lazy(() => import('./components/admin/AddPayments'))
+const FarmerPayments = lazy(() => import('./components/admin/FarmerPayments'))
+const List = lazy(() => import('./components/admin/List'))
+const Dashboard = lazy(() => import('./components/admin/Dashboard'))
+const Login = lazy(() => import('./components/admin/Login'))
+const ProtectedRoute = lazy(() => import('./components/admin/ProtectedRoute'))
+const AllFarmers = lazy(() => import('./components/admin/AllFarmers'))
+
+// Lazy loaded other components
+const NotFound = lazy(() => import('./components/NotFound'))
+const LandingPage = lazy(() => import('./components/LandingPage'))
+
+// Lazy loaded farmer components
+const FarmerLayout = lazy(() => import('./components/farmer/FarmerLayout'))
+const FarmerHome = lazy(() => import('./components/farmer/FarmerHome'))
+const FarmerProducts = lazy(() => import('./components/farmer/FarmerProducts'))
 
 const App = () => {
   return (
-    
-      <Router>
-        <Routes>
-          <Route path="/" element={<LandingPage />} />
-          {/* Login Route */}
-          <Route path="/login" element={<Login />} />
-          
-          {/* Protected Admin Routes */}
-          <Route path="/admin-dashboard" element={
+    <Router>
+      <Routes>
+        <Route path="/" element={
+          <Suspense fallback={<LoadingSpinner size="lg" text="Loading landing page..." />}>
+            <LandingPage />
+          </Suspense>
+        } />
+        
+        {/* Login Route */}
+        <Route path="/login" element={
+          <Suspense fallback={<LoadingSpinner size="lg" text="Loading login..." />}>
+            <Login />
+          </Suspense>
+        } />
+        
+        {/* Protected Admin Routes */}
+        <Route path="/admin-dashboard" element={
+          <Suspense fallback={<LoadingSpinner size="lg" text="Loading admin panel..." />}>
             <ProtectedRoute>
               <AdminLayout />
             </ProtectedRoute>
-          }>
-           <Route index element={<Dashboard />} />
-            <Route path="list" element={<List />} />
-            <Route path="add-deal" element={<AddDeal />} />
-            <Route path="add-farmer" element={<AddFarmer />} />
-            <Route path="all-farmers" element={<AllFarmers />} />
-          </Route>
+          </Suspense>
+        }>
+          <Route index element={
+            <Suspense fallback={<LoadingSpinner size="md" text="Loading dashboard..." />}>
+              <Dashboard />
+            </Suspense>
+          } />
+          
+          <Route path="list" element={
+            <Suspense fallback={<LoadingSpinner size="md" text="Loading deals..." />}>
+              <List />
+            </Suspense>
+          } />
+          
+          <Route path="add-deal" element={
+            <Suspense fallback={<LoadingSpinner size="md" text="Loading add deal..." />}>
+              <AddDeal />
+            </Suspense>
+          } />
+          
+          <Route path="add-farmer" element={
+            <Suspense fallback={<LoadingSpinner size="md" text="Loading add farmer..." />}>
+              <AddFarmer />
+            </Suspense>
+          } />
+          
+          <Route path="add-payments" element={
+            <Suspense fallback={<LoadingSpinner size="md" text="Loading add payments..." />}>
+              <AddPayments />
+            </Suspense>
+          } />
+          
+          <Route path="all-farmers" element={
+            <Suspense fallback={<LoadingSpinner size="md" text="Loading farmers..." />}>
+              <AllFarmers />
+            </Suspense>
+          } />
+          
+          <Route path="farmer-payments/:farmerId" element={
+            <Suspense fallback={<LoadingSpinner size="md" text="Loading payments..." />}>
+              <FarmerPayments />
+            </Suspense>
+          } />
+        </Route>
 
-          {/* Protected Farmer Routes */}
-          <Route path="/farmer-dashboard" element={<FarmerLayout />}>
-            <Route index element={<FarmerHome />} />
-            <Route path= "products" element={<FarmerProducts/>} />
-          </Route>
+        {/* Protected Farmer Routes */}
+        <Route path="/farmer-dashboard" element={
+          <Suspense fallback={<LoadingSpinner size="lg" text="Loading farmer dashboard..." />}>
+            <FarmerLayout />
+          </Suspense>
+        }>
+          <Route index element={
+            <Suspense fallback={<LoadingSpinner size="md" text="Loading farmer home..." />}>
+              <FarmerHome />
+            </Suspense>
+          } />
+          
+          <Route path="products" element={
+            <Suspense fallback={<LoadingSpinner size="md" text="Loading products..." />}>
+              <FarmerProducts />
+            </Suspense>
+          } />
+        </Route>
 
-          {/* 404 Catch All Route */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </Router>
-   
+        {/* 404 Catch All Route */}
+        <Route path="*" element={
+          <Suspense fallback={<LoadingSpinner size="lg" text="Loading..." />}>
+            <NotFound />
+          </Suspense>
+        } />
+      </Routes>
+    </Router>
   )
 }
 

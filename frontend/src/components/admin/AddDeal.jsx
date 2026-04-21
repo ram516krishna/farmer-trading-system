@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import toast from 'react-hot-toast'
-import { Package, Weight, IndianRupee, ShoppingBag, User, Phone, MapPin, Tag, ChevronDown, ChevronUp, Upload } from 'lucide-react'
+import { Package, Weight, IndianRupee, ShoppingBag, User, Phone, MapPin, Tag, ChevronDown, ChevronUp, Upload, CheckCircle2, Leaf } from 'lucide-react'
 
 const DEAL_INITIAL = {
   farmer: '',
-  productName: '',
   weight: '',
   rate: '',
   bagQuantity: '',
@@ -21,40 +20,56 @@ const FARMER_INITIAL = {
 }
 
 const MATERIALS = [
-  { value: 'makka', label: 'Makka' },
-  { value: 'gehu', label: 'Gehu' },
-  { value: 'dhan', label: 'Dhan' },
-  { value: 'haldi', label: 'Haldi' },
+  { value: 'makka', label: 'Makka', emoji: '🌽' },
+  { value: 'gehu', label: 'Gehu', emoji: '🌾' },
+  { value: 'dhan', label: 'Dhan', emoji: '🌿' },
+  { value: 'haldi', label: 'Haldi', emoji: '🟡' },
 ]
 
-const InputField = ({ icon: Icon, ...props }) => (
-  <label className="input outline-none flex items-center gap-2.5 focus-within:border-success focus-within:ring-2 focus-within:ring-success/20 transition-all">
-    <Icon size={14} className="text-base-content/40 shrink-0" />
-    <input className="grow text-sm bg-transparent outline-none placeholder:text-base-content/30" {...props} />
-  </label>
+/* ─── Tiny reusable field wrapper ─── */
+const Field = ({ label, required, hint, children }) => (
+  <div className="space-y-1.5">
+    <label className="flex items-center gap-1 text-xs font-semibold text-base-content/60 uppercase tracking-wider">
+      {label}
+      {required && <span className="text-error">*</span>}
+    </label>
+    {children}
+    {hint && <p className="text-[10px] text-base-content/40">{hint}</p>}
+  </div>
 )
 
-const SectionHeader = ({ step, color, title, subtitle, children }) => {
-  const colors = {
-    green: 'bg-success/15 text-success border-success/25',
-    amber: 'bg-warning/15 text-warning border-warning/25',
-    blue: 'bg-info/15 text-info border-info/25',
+/* ─── Icon input ─── */
+const IconInput = ({ icon: Icon, accent = 'success', ...props }) => {
+  const rings = {
+    success: 'focus-within:border-success focus-within:ring-success/20',
+    warning: 'focus-within:border-warning focus-within:ring-warning/20',
+    info: 'focus-within:border-info focus-within:ring-info/20',
   }
   return (
-    <div className="flex items-center justify-between px-4 py-3 bg-base-200 border-b border-base-300">
-      <div className="flex items-center gap-3">
-        <div className={`w-6 h-6 rounded-full border flex items-center justify-center text-xs font-semibold ${colors[color]}`}>
-          {step}
-        </div>
-        <div className="leading-tight">
-          <p className="text-sm font-medium">{title}</p>
-          <p className="text-xs text-base-content/50">{subtitle}</p>
-        </div>
-      </div>
-      {children}
+    <label className={`input outline-none flex items-center gap-2.5 focus-within:ring-2 transition-all ${rings[accent]}`}>
+      <Icon size={15} className="text-base-content/35 shrink-0" />
+      <input className="grow text-sm bg-transparent outline-none placeholder:text-base-content/25" {...props} />
+    </label>
+  )
+}
+
+/* ─── Step pill ─── */
+const StepPill = ({ n, label, color }) => {
+  const c = { green: 'bg-success text-success-content', amber: 'bg-warning text-warning-content', blue: 'bg-info text-info-content' }
+  return (
+    <div className="flex items-center gap-2.5">
+      <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold shrink-0 ${c[color]}`}>{n}</span>
+      <span className="text-sm font-semibold">{label}</span>
     </div>
   )
 }
+
+/* ─── Card shell ─── */
+const Card = ({ children, className = '' }) => (
+  <div className={`bg-base-100 border border-base-200 rounded-2xl overflow-hidden shadow-sm ${className}`}>
+    {children}
+  </div>
+)
 
 const AddDeal = () => {
   const [dealForm, setDealForm] = useState(DEAL_INITIAL)
@@ -69,9 +84,7 @@ const AddDeal = () => {
     const fetchFarmers = async () => {
       setFarmersLoading(true)
       try {
-        const res = await fetch(`${import.meta.env.VITE_API_URL}/farmers`, {
-          credentials: 'include',
-        })
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/farmers`, { credentials: 'include' })
         const data = await res.json()
         if (data.success) setFarmers(data.data)
       } catch (err) {
@@ -90,9 +103,7 @@ const AddDeal = () => {
 
   const handleFileChange = (e) => {
     const file = e.target.files[0]
-    if (file) {
-      setDealForm(prev => ({ ...prev, receipt: file }))
-    }
+    if (file) setDealForm(prev => ({ ...prev, receipt: file }))
   }
 
   const handleFarmerChange = (e) => {
@@ -141,19 +152,11 @@ const AddDeal = () => {
     setLoading(true)
     try {
       const formData = new FormData()
-      
-      // Add all deal form fields except receipt
       Object.keys(dealForm).forEach(key => {
-        if (key !== 'receipt') {
-          formData.append(key, dealForm[key])
-        }
+        if (key !== 'receipt') formData.append(key, dealForm[key])
       })
-      
-      // Add receipt file if it exists
-      if (dealForm.receipt) {
-        formData.append('receipt', dealForm.receipt)
-      }
-      
+      if (dealForm.receipt) formData.append('receipt', dealForm.receipt)
+
       const res = await fetch(`${import.meta.env.VITE_API_URL}/products`, {
         method: 'POST',
         credentials: 'include',
@@ -180,323 +183,180 @@ const AddDeal = () => {
       : null
 
   return (
-    <div className="w-full">
+    <div className="w-full pb-8 space-y-3">
 
+      <form onSubmit={handleSubmit} className="space-y-3">
 
-      <form onSubmit={handleSubmit} className="space-y-4">
-
-        {/* ── Section 1: Farmer ── */}
-        <div className="border border-base-300 rounded-2xl overflow-hidden">
-          <SectionHeader step="1" color="green" title="Select farmer" subtitle="Who is this deal for?">
+        {/* ── Card 1: Farmer ── */}
+        <Card>
+          <div className="flex items-center justify-between px-4 py-3.5 border-b border-base-200">
+            <StepPill n="1" label="Select Farmer" color="green" />
             <button
               type="button"
               onClick={() => setShowInlineFarmer(v => !v)}
-              className="flex items-center gap-1.5 text-xs font-medium text-info bg-info/10 border border-info/25 px-3 py-1.5 rounded-lg hover:bg-info/20 transition-colors"
+              className="flex items-center gap-1.5 text-xs font-medium text-info bg-info/10 border border-info/20 px-3 py-1.5 rounded-lg active:scale-95 transition-transform"
             >
-              {showInlineFarmer ? <ChevronUp size={12} /> : <ChevronDown size={12} />}
-              {showInlineFarmer ? 'Cancel' : 'Add new farmer'}
+              {showInlineFarmer ? <ChevronUp size={11} /> : <ChevronDown size={11} />}
+              {showInlineFarmer ? 'Cancel' : 'New farmer'}
             </button>
-          </SectionHeader>
+          </div>
 
-          <div className="p-4 space-y-3">
-            <div className="form-control">
-              <label className="label py-0 mb-1.5">
-                <span className="label-text text-xs font-medium">
-                  Farmer <span className="text-error">*</span>
-                </span>
-              </label>
+          <div className="p-4">
+            <Field label="Farmer" required>
               <select
                 name="farmer"
                 value={dealForm.farmer}
                 onChange={handleDealChange}
-                className="select outline-none text-sm focus:border-success focus:ring-2 focus:ring-success/20 focus:outline-none w-full"
+                className="select outline-none text-sm focus:border-success focus:ring-2 focus:ring-success/20 focus:outline-none w-full h-12"
                 disabled={farmersLoading}
               >
-                <option value="">
-                  {farmersLoading ? 'Loading farmers...' : 'Choose from existing farmers...'}
-                </option>
+                <option value="">{farmersLoading ? 'Loading...' : 'Choose a farmer...'}</option>
                 {farmers.map(f => (
-                  <option key={f._id} value={f._id}>
-                    {f.name} — {f.mobile}
-                  </option>
+                  <option key={f._id} value={f._id}>{f.name} — {f.mobile}</option>
                 ))}
               </select>
-            </div>
+            </Field>
           </div>
 
-          {/* Inline new farmer panel */}
+          {/* Inline new farmer */}
           {showInlineFarmer && (
-            <div className="bg-info/5 border-t border-info/20 p-4 space-y-3">
-              <p className="text-xs font-medium text-info flex items-center gap-1.5">
-                <User size={12} />
-                New farmer details
+            <div className="border-t border-info/15 bg-info/5 p-4 space-y-3">
+              <p className="text-xs font-semibold text-info/80 flex items-center gap-1.5">
+                <User size={11} /> New farmer details
               </p>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                <div className="form-control">
-                  <label className="label py-0 mb-1.5">
-                    <span className="label-text text-xs font-medium">
-                      Full name <span className="text-error">*</span>
-                    </span>
-                  </label>
-                  <InputField
-                    icon={User}
-                    type="text"
-                    name="name"
-                    value={farmerForm.name}
-                    onChange={handleFarmerChange}
-                    placeholder="Farmer's full name"
-                  />
+              <div className="space-y-3">
+                <div className="grid grid-cols-2 gap-2.5">
+                  <Field label="Full name" required>
+                    <IconInput icon={User} accent="info" type="text" name="name" value={farmerForm.name} onChange={handleFarmerChange} placeholder="Full name" />
+                  </Field>
+                  <Field label="Father's name" required>
+                    <IconInput icon={User} accent="info" type="text" name="fatherName" value={farmerForm.fatherName} onChange={handleFarmerChange} placeholder="Father's name" />
+                  </Field>
                 </div>
-
-                <div className="form-control">
-                  <label className="label py-0 mb-1.5">
-                    <span className="label-text text-xs font-medium">
-                      Father's name <span className="text-error">*</span>
-                    </span>
-                  </label>
-                  <InputField
-                    icon={User}
-                    type="text"
-                    name="fatherName"
-                    value={farmerForm.fatherName}
-                    onChange={handleFarmerChange}
-                    placeholder="Father's name"
-                  />
-                </div>
-
-                <div className="form-control">
-                  <label className="label py-0 mb-1.5">
-                    <span className="label-text text-xs font-medium">
-                      Mobile <span className="text-error">*</span>
-                    </span>
-                  </label>
-                  <InputField
-                    icon={Phone}
-                    type="tel"
-                    name="mobile"
-                    value={farmerForm.mobile}
-                    onChange={handleFarmerChange}
-                    placeholder="10-digit number"
-                    maxLength="10"
-                    pattern="[0-9]{10}"
-                  />
-                </div>
-
-                <div className="form-control">
-                  <label className="label py-0 mb-1.5">
-                    <span className="label-text text-xs font-medium">Address</span>
-                  </label>
-                  <InputField
-                    icon={MapPin}
-                    type="text"
-                    name="address"
-                    value={farmerForm.address}
-                    onChange={handleFarmerChange}
-                    placeholder="Village / town (optional)"
-                  />
+                <div className="grid grid-cols-2 gap-2.5">
+                  <Field label="Mobile" required>
+                    <IconInput icon={Phone} accent="info" type="tel" name="mobile" value={farmerForm.mobile} onChange={handleFarmerChange} placeholder="10-digit" maxLength="10" pattern="[0-9]{10}" />
+                  </Field>
+                  <Field label="Address">
+                    <IconInput icon={MapPin} accent="info" type="text" name="address" value={farmerForm.address} onChange={handleFarmerChange} placeholder="Village / town" />
+                  </Field>
                 </div>
               </div>
-
               <button
                 type="button"
                 onClick={handleSaveFarmer}
                 disabled={savingFarmer}
-                className="btn btn-info btn-sm mt-1"
+                className="btn btn-info btn-sm w-full mt-1"
               >
-                {savingFarmer ? (
-                  <>
-                    <span className="loading loading-spinner loading-xs" />
-                    Saving...
-                  </>
-                ) : (
-                  'Save & select this farmer'
-                )}
+                {savingFarmer
+                  ? <><span className="loading loading-spinner loading-xs" /> Saving...</>
+                  : <><CheckCircle2 size={14} /> Save & select farmer</>}
               </button>
             </div>
           )}
-        </div>
+        </Card>
 
-        {/* ── Section 2: Product details ── */}
-        <div className="border border-base-300 rounded-2xl overflow-hidden">
-          <SectionHeader step="2" color="amber" title="Product details" subtitle="What is being traded?" />
+        {/* ── Card 2: Product ── */}
+        <Card>
+          <div className="px-4 py-3.5 border-b border-base-200">
+            <StepPill n="2" label="Product Details" color="amber" />
+          </div>
 
           <div className="p-4 space-y-3">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-              <div className="form-control">
-                <label className="label py-0 mb-1.5">
-                  <span className="label-text text-xs font-medium">
-                    Material <span className="text-error">*</span>
-                  </span>
-                </label>
-                <select
-                  name="material"
-                  value={dealForm.material}
-                  onChange={handleDealChange}
-                  className="select outline-none text-sm focus:border-warning focus:ring-2 focus:ring-warning/20 focus:outline-none w-full"
-                  required
-                >
-                  <option value="">Select material type...</option>
-                  {MATERIALS.map(m => (
-                    <option key={m.value} value={m.value}>{m.label}</option>
-                  ))}
-                </select>
+            {/* Material chips */}
+            <Field label="Material" required>
+              <div className="grid md:grid-cols-2 gap-2 mt-0.5">
+                {MATERIALS.map(m => (
+                  <button
+                    key={m.value}
+                    type="button"
+                    onClick={() => setDealForm(prev => ({ ...prev, material: m.value }))}
+                    className={`flex items-center gap-2 px-3 py-2.5 rounded-xl border text-sm font-medium transition-all active:scale-95
+                      ${dealForm.material === m.value
+                        ? 'border-warning bg-warning/15 text-warning'
+                        : 'border-base-200 bg-base-50 text-base-content/60 hover:border-warning/40'}`}
+                  >
+                    <span className="text-base leading-none">{m.emoji}</span>
+                    {m.label}
+                    {dealForm.material === m.value && <CheckCircle2 size={13} className="ml-auto shrink-0" />}
+                  </button>
+                ))}
               </div>
+            </Field>
 
-              <div className="form-control">
-                <label className="label py-0 mb-1.5">
-                  <span className="label-text text-xs font-medium">Product name</span>
-                </label>
-                <label className="input outline-none flex items-center gap-2.5 focus-within:border-warning focus-within:ring-2 focus-within:ring-warning/20 transition-all">
-                  <Tag size={14} className="text-base-content/40 shrink-0" />
-                  <input
-                    type="text"
-                    name="productName"
-                    value={dealForm.productName}
-                    onChange={handleDealChange}
-                    placeholder="e.g. Fine wheat"
-                    className="grow text-sm bg-transparent outline-none placeholder:text-base-content/30"
-                  />
-                </label>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-              <div className="form-control">
-                <label className="label py-0 mb-1.5">
-                  <span className="label-text text-xs font-medium">Weight (kg)</span>
-                </label>
-                <label className="input outline-none flex items-center gap-2.5 focus-within:border-warning focus-within:ring-2 focus-within:ring-warning/20 transition-all">
-                  <Weight size={14} className="text-base-content/40 shrink-0" />
-                  <input
-                    type="number"
-                    name="weight"
-                    value={dealForm.weight}
-                    onChange={handleDealChange}
-                    placeholder="0.0"
-                    className="grow text-sm bg-transparent outline-none placeholder:text-base-content/30"
-                    step="0.1"
-                    min="0"
-                  />
-                </label>
-              </div>
-
-              <div className="form-control">
-                <label className="label py-0 mb-1.5">
-                  <span className="label-text text-xs font-medium">Rate (₹/kg)</span>
-                </label>
-                <label className="input outline-none flex items-center gap-2.5 focus-within:border-warning focus-within:ring-2 focus-within:ring-warning/20 transition-all">
-                  <IndianRupee size={14} className="text-base-content/40 shrink-0" />
-                  <input
-                    type="number"
-                    name="rate"
-                    value={dealForm.rate}
-                    onChange={handleDealChange}
-                    placeholder="0.00"
-                    className="grow text-sm bg-transparent outline-none placeholder:text-base-content/30"
-                    step="0.01"
-                    min="0"
-                  />
-                </label>
-              </div>
+            {/* Weight & Rate */}
+            <div className="grid lg:grid-cols-2 grid-cols-1 gap-2.5">
+              <Field label="Weight (kg)">
+                <IconInput icon={Weight} accent="warning" type="number" name="weight" value={dealForm.weight} onChange={handleDealChange} placeholder="0.0" step="0.1" min="0" />
+              </Field>
+              <Field label="Rate (₹/kg)">
+                <IconInput icon={IndianRupee} accent="warning" type="number" name="rate" value={dealForm.rate} onChange={handleDealChange} placeholder="0.00" step="0.01" min="0" />
+              </Field>
             </div>
 
             {/* Live total */}
             {total && (
-              <div className="flex items-center justify-between bg-success/10 border border-success/25 rounded-xl px-4 py-2.5">
-                <span className="text-xs font-medium text-success/80">Estimated total</span>
-                <span className="text-base font-semibold text-success">₹ {total}</span>
+              <div className="flex items-center justify-between bg-success/10 border border-success/20 rounded-xl px-4 py-3">
+                <span className="text-xs font-semibold text-success/70 uppercase tracking-wider">Estimated Total</span>
+                <span className="text-lg font-bold text-success">₹ {total}</span>
               </div>
             )}
           </div>
-        </div>
+        </Card>
 
-        {/* ── Section 3: Packaging & payment ── */}
-        <div className="border border-base-300 rounded-2xl overflow-hidden">
-          <SectionHeader step="3" color="blue" title="Packaging & payment" subtitle="Bag count and settlement status" />
+        {/* ── Card 3: Packaging & Payment ── */}
+        <Card>
+          <div className="px-4 py-3.5 border-b border-base-200">
+            <StepPill n="3" label="Packaging & Payment" color="blue" />
+          </div>
 
           <div className="p-4 space-y-3">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-              <div className="form-control">
-                <label className="label py-0 mb-1.5">
-                  <span className="label-text text-xs font-medium">Bag quantity</span>
-                </label>
-                <label className="input outline-none flex items-center gap-2.5 focus-within:border-info focus-within:ring-2 focus-within:ring-info/20 transition-all">
-                  <ShoppingBag size={14} className="text-base-content/40 shrink-0" />
-                  <input
-                    type="number"
-                    name="bagQuantity"
-                    value={dealForm.bagQuantity}
-                    onChange={handleDealChange}
-                    placeholder="Number of bags"
-                    className="grow text-sm bg-transparent outline-none placeholder:text-base-content/30"
-                    min="0"
-                  />
-                </label>
-              </div>
+            <div className="grid grid-cols-2 gap-2.5">
+              <Field label="Bag qty">
+                <IconInput icon={ShoppingBag} accent="info" type="number" name="bagQuantity" value={dealForm.bagQuantity} onChange={handleDealChange} placeholder="0" min="0" />
+              </Field>
 
-              <div className="form-control">
-                <label className="label py-0 mb-1.5">
-                  <span className="label-text text-xs font-medium">Payment status</span>
-                </label>
+              <Field label="Status">
                 <select
                   name="status"
                   value={dealForm.status}
                   onChange={handleDealChange}
                   className="select outline-none text-sm focus:border-info focus:ring-2 focus:ring-info/20 focus:outline-none w-full"
                 >
-                  <option value="pending">Pending</option>
-                  <option value="paid">Paid</option>
+                  <option value="pending">⏳ Pending</option>
+                  <option value="paid">✅ Paid</option>
                 </select>
-              </div>
+              </Field>
             </div>
 
-            {/* Receipt Upload */}
-            <div className="form-control">
-              <label className="label py-0 mb-1.5">
-                <span className="label-text text-xs font-medium">Receipt (optional)</span>
+            {/* Receipt upload */}
+            <Field label="Receipt" hint="JPG, PNG or PDF · max 5 MB">
+              <label className={`flex items-center gap-3 px-3 py-3 border rounded-xl cursor-pointer transition-all active:scale-[0.98]
+                ${dealForm.receipt ? 'border-success/40 bg-success/5' : 'border-base-200 hover:border-info/40 bg-base-50'}`}>
+                <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0
+                  ${dealForm.receipt ? 'bg-success/15 text-success' : 'bg-base-200 text-base-content/40'}`}>
+                  <Upload size={15} />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className={`text-sm font-medium truncate ${dealForm.receipt ? 'text-success' : 'text-base-content/50'}`}>
+                    {dealForm.receipt ? dealForm.receipt.name : 'Tap to upload receipt'}
+                  </p>
+                </div>
+                <input type="file" onChange={handleFileChange} className="hidden" accept="image/*,.pdf" />
               </label>
-              <div className="flex flex-col gap-2">
-                <label className="flex items-center gap-2.5 px-3 py-2 border border-base-300 rounded-lg cursor-pointer hover:border-info/50 transition-colors">
-                  <Upload size={14} className="text-base-content/40 shrink-0" />
-                  <input
-                    type="file"
-                    onChange={handleFileChange}
-                    className="hidden"
-                  />
-                  <span className="text-sm text-base-content/60">
-                    {dealForm.receipt ? dealForm.receipt.name : 'Choose receipt image or PDF'}
-                  </span>
-                </label>
-                
-              
-              </div>
-              <label className="label py-0">
-                <span className="label-text-alt text-xs text-base-content/50">
-                  Upload receipt image (max 5MB, JPG/PNG)
-                </span>
-              </label>
-            </div>
+            </Field>
           </div>
-        </div>
+        </Card>
 
-        {/* Submit */}
+        {/* ── Submit ── */}
         <button
           type="submit"
-          className="btn btn-success w-full text-sm font-medium tracking-wide"
+          className="btn btn-success w-full h-13 text-sm font-semibold tracking-wide shadow-lg shadow-success/20 active:scale-[0.98] transition-transform"
           disabled={loading}
         >
-          {loading ? (
-            <>
-              <span className="loading loading-spinner loading-xs" />
-              Adding deal...
-            </>
-          ) : (
-            <>
-              <Package size={15} />
-              Add deal
-            </>
-          )}
+          {loading
+            ? <><span className="loading loading-spinner loading-sm" /> Adding deal...</>
+            : <><Package size={16} /> Add Deal</>}
         </button>
 
       </form>
