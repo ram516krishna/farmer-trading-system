@@ -19,7 +19,7 @@ const BackButton = ({ className = '', size = 'sm' }) => {
   return (
     <button
       onClick={handleGoBack}
-      className={`btn btn-ghost ${sizeClasses[size]} ${className} lg:hidden`}
+      className={`btn btn-lg ${sizeClasses[size]} ${className} lg:hidden`}
       title="Go back"
     >
       <ArrowLeft size={16} />
