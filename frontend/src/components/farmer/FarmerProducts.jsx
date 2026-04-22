@@ -7,6 +7,7 @@ import {
   createColumnHelper,
 } from '@tanstack/react-table'
 import { Download } from 'lucide-react'
+import BackButton from '../admin/BackButton'
 
 const columnHelper = createColumnHelper()
 const LIMIT = 10
@@ -39,7 +40,7 @@ const FarmerProducts = () => {
   const columns = [
     columnHelper.accessor('farmer.name', {
       header: 'Name',
-      cell: (info) => <span className="font-medium">{info.getValue()}</span>,
+      cell: (info) => <span className="font-medium text-nowrap">{info.getValue()}</span>,
     }),
     columnHelper.accessor('farmer.fatherName', { header: 'Father Name' }),
     columnHelper.accessor('farmer.mobile', { header: 'Mobile' }),
@@ -107,6 +108,11 @@ const FarmerProducts = () => {
 
   return (
     <div className="space-y-4">
+      {/* Mobile Back Button */}
+      <div className="flex justify-between items-center">
+        <BackButton />
+      </div>
+      
       <div className="overflow-x-auto">
         {products.length === 0 ? (
           <div className="text-center py-8">

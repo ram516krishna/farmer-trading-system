@@ -22,6 +22,7 @@ const LandingPage = lazy(() => import('./components/LandingPage'))
 const FarmerLayout = lazy(() => import('./components/farmer/FarmerLayout'))
 const FarmerHome = lazy(() => import('./components/farmer/FarmerHome'))
 const FarmerProducts = lazy(() => import('./components/farmer/FarmerProducts'))
+const FarmerViewPayments = lazy(() => import('./components/farmer/FarmerViewPayments'))
 
 const App = () => {
   return (
@@ -106,6 +107,12 @@ const App = () => {
           <Route path="products" element={
             <Suspense fallback={<LoadingSpinner size="md" text="Loading products..." />}>
               <FarmerProducts />
+            </Suspense>
+          } />
+          
+          <Route path="payments" element={
+            <Suspense fallback={<LoadingSpinner size="md" text="Loading payments..." />}>
+              <FarmerViewPayments />
             </Suspense>
           } />
         </Route>

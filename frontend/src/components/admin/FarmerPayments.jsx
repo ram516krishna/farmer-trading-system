@@ -86,7 +86,7 @@ const FarmerPayments = () => {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="bg-base-100 rounded-2xl border border-base-300 shadow-sm p-6">
+      <div>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
             <button
@@ -96,17 +96,7 @@ const FarmerPayments = () => {
               <ArrowLeft size={16} />
               Back
             </button>
-            <div className="flex items-center gap-3">
-              <div className="bg-info/20 text-info rounded-full p-3">
-                <User size={20} />
-              </div>
-              <div>
-                <h2 className="text-xl font-bold">{farmer.name}</h2>
-                <p className="text-sm text-base-content/60">
-                  {farmer.mobile} {farmer.fatherName && `· ${farmer.fatherName}`}
-                </p>
-              </div>
-            </div>
+           
           </div>
           
           {balance !== undefined && (
@@ -124,11 +114,9 @@ const FarmerPayments = () => {
       </div>
 
       {/* Payments List */}
-      <div className="bg-base-100 rounded-2xl border border-base-300 shadow-sm p-6">
+      <div >
         <div className="flex items-center gap-3 mb-6">
-          <div className="bg-success/20 text-success rounded-full p-2">
-            <CreditCard size={18} />
-          </div>
+         
           <div>
             <h3 className="text-lg font-bold">Payment History</h3>
             <p className="text-sm text-base-content/60">

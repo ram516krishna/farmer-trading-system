@@ -8,7 +8,7 @@ const router = Router();
 router.post("/", isAdmin, createPayment);
 
 // Get all payments for a specific farmer
-router.get("/farmer/:farmerId", isAdmin, getFarmerPayments);
+router.get("/farmer/:farmerId", getFarmerPayments);
 
 // Get a specific payment by ID
 router.get("/:id", isAdmin, getPaymentById);

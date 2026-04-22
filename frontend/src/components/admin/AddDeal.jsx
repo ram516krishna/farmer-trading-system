@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import toast from 'react-hot-toast'
 import { Package, Weight, IndianRupee, ShoppingBag, User, Phone, MapPin, Tag, ChevronDown, ChevronUp, Upload, CheckCircle2, Leaf } from 'lucide-react'
+import BackButton from './BackButton'
 
 const DEAL_INITIAL = {
   farmer: '',
@@ -46,7 +47,7 @@ const IconInput = ({ icon: Icon, accent = 'success', ...props }) => {
     info: 'focus-within:border-info focus-within:ring-info/20',
   }
   return (
-    <label className={`input outline-none flex items-center gap-2.5 focus-within:ring-2 transition-all ${rings[accent]}`}>
+    <label className={`input outline-none  w-full flex items-center gap-2.5 focus-within:ring-2 transition-all ${rings[accent]}`}>
       <Icon size={15} className="text-base-content/35 shrink-0" />
       <input className="grow text-sm bg-transparent outline-none placeholder:text-base-content/25" {...props} />
     </label>
@@ -64,12 +65,6 @@ const StepPill = ({ n, label, color }) => {
   )
 }
 
-/* ─── Card shell ─── */
-const Card = ({ children, className = '' }) => (
-  <div className={`bg-base-100 border border-base-200 rounded-2xl overflow-hidden shadow-sm ${className}`}>
-    {children}
-  </div>
-)
 
 const AddDeal = () => {
   const [dealForm, setDealForm] = useState(DEAL_INITIAL)
@@ -183,13 +178,17 @@ const AddDeal = () => {
       : null
 
   return (
-    <div className="w-full pb-8 space-y-3">
+    <div className="w-full space-y-3">
+      {/* Mobile Back Button */}
+      <div className="flex justify-between items-center">
+        <BackButton />
+      </div>
 
-      <form onSubmit={handleSubmit} className="space-y-3">
+      <form onSubmit={handleSubmit} className="space-y-6">
 
-        {/* ── Card 1: Farmer ── */}
-        <Card>
-          <div className="flex items-center justify-between px-4 py-3.5 border-b border-base-200">
+        {/* Farmer Section */}
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
             <StepPill n="1" label="Select Farmer" color="green" />
             <button
               type="button"
@@ -201,31 +200,29 @@ const AddDeal = () => {
             </button>
           </div>
 
-          <div className="p-4">
-            <Field label="Farmer" required>
-              <select
-                name="farmer"
-                value={dealForm.farmer}
-                onChange={handleDealChange}
-                className="select outline-none text-sm focus:border-success focus:ring-2 focus:ring-success/20 focus:outline-none w-full h-12"
-                disabled={farmersLoading}
-              >
-                <option value="">{farmersLoading ? 'Loading...' : 'Choose a farmer...'}</option>
-                {farmers.map(f => (
-                  <option key={f._id} value={f._id}>{f.name} — {f.mobile}</option>
-                ))}
-              </select>
-            </Field>
-          </div>
+          <Field label="Farmer" required>
+            <select
+              name="farmer"
+              value={dealForm.farmer}
+              onChange={handleDealChange}
+              className="select outline-none text-sm focus:border-success focus:ring-2 focus:ring-success/20 focus:outline-none w-full h-12"
+              disabled={farmersLoading}
+            >
+              <option value="">{farmersLoading ? 'Loading...' : 'Choose a farmer...'}</option>
+              {farmers.map(f => (
+                <option key={f._id} value={f._id}>{f.name} — {f.mobile}</option>
+              ))}
+            </select>
+          </Field>
 
           {/* Inline new farmer */}
           {showInlineFarmer && (
-            <div className="border-t border-info/15 bg-info/5 p-4 space-y-3">
+            <div className="bg-base-50 rounded-xl p-4 space-y-3">
               <p className="text-xs font-semibold text-info/80 flex items-center gap-1.5">
                 <User size={11} /> New farmer details
               </p>
               <div className="space-y-3">
-                <div className="grid grid-cols-2 gap-2.5">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <Field label="Full name" required>
                     <IconInput icon={User} accent="info" type="text" name="name" value={farmerForm.name} onChange={handleFarmerChange} placeholder="Full name" />
                   </Field>
@@ -233,7 +230,7 @@ const AddDeal = () => {
                     <IconInput icon={User} accent="info" type="text" name="fatherName" value={farmerForm.fatherName} onChange={handleFarmerChange} placeholder="Father's name" />
                   </Field>
                 </div>
-                <div className="grid grid-cols-2 gap-2.5">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <Field label="Mobile" required>
                     <IconInput icon={Phone} accent="info" type="tel" name="mobile" value={farmerForm.mobile} onChange={handleFarmerChange} placeholder="10-digit" maxLength="10" pattern="[0-9]{10}" />
                   </Field>
@@ -246,7 +243,7 @@ const AddDeal = () => {
                 type="button"
                 onClick={handleSaveFarmer}
                 disabled={savingFarmer}
-                className="btn btn-info btn-sm w-full mt-1"
+                className="btn btn-info btn-sm w-full"
               >
                 {savingFarmer
                   ? <><span className="loading loading-spinner loading-xs" /> Saving...</>
@@ -254,24 +251,24 @@ const AddDeal = () => {
               </button>
             </div>
           )}
-        </Card>
+        </div>
 
-        {/* ── Card 2: Product ── */}
-        <Card>
-          <div className="px-4 py-3.5 border-b border-base-200">
+        {/* Product Details Section */}
+        <div className="space-y-4">
+          <div className="flex items-center">
             <StepPill n="2" label="Product Details" color="amber" />
           </div>
 
-          <div className="p-4 space-y-3">
+          <div className="space-y-4">
             {/* Material chips */}
             <Field label="Material" required>
-              <div className="grid md:grid-cols-2 gap-2 mt-0.5">
+              <div className="grid grid-cols-2 gap-3">
                 {MATERIALS.map(m => (
                   <button
                     key={m.value}
                     type="button"
                     onClick={() => setDealForm(prev => ({ ...prev, material: m.value }))}
-                    className={`flex items-center gap-2 px-3 py-2.5 rounded-xl border text-sm font-medium transition-all active:scale-95
+                    className={`flex items-center gap-2 px-4 py-3 rounded-xl border text-sm font-medium transition-all active:scale-95
                       ${dealForm.material === m.value
                         ? 'border-warning bg-warning/15 text-warning'
                         : 'border-base-200 bg-base-50 text-base-content/60 hover:border-warning/40'}`}
@@ -285,7 +282,7 @@ const AddDeal = () => {
             </Field>
 
             {/* Weight & Rate */}
-            <div className="grid lg:grid-cols-2 grid-cols-1 gap-2.5">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <Field label="Weight (kg)">
                 <IconInput icon={Weight} accent="warning" type="number" name="weight" value={dealForm.weight} onChange={handleDealChange} placeholder="0.0" step="0.1" min="0" />
               </Field>
@@ -296,22 +293,22 @@ const AddDeal = () => {
 
             {/* Live total */}
             {total && (
-              <div className="flex items-center justify-between bg-success/10 border border-success/20 rounded-xl px-4 py-3">
+              <div className="flex items-center justify-between bg-success/10 border border-success/20 rounded-xl p-4">
                 <span className="text-xs font-semibold text-success/70 uppercase tracking-wider">Estimated Total</span>
                 <span className="text-lg font-bold text-success">₹ {total}</span>
               </div>
             )}
           </div>
-        </Card>
+        </div>
 
-        {/* ── Card 3: Packaging & Payment ── */}
-        <Card>
-          <div className="px-4 py-3.5 border-b border-base-200">
+        {/* Packaging & Payment Section */}
+        <div className="space-y-4">
+          <div className="flex items-center">
             <StepPill n="3" label="Packaging & Payment" color="blue" />
           </div>
 
-          <div className="p-4 space-y-3">
-            <div className="grid grid-cols-2 gap-2.5">
+          <div className="space-y-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <Field label="Bag qty">
                 <IconInput icon={ShoppingBag} accent="info" type="number" name="bagQuantity" value={dealForm.bagQuantity} onChange={handleDealChange} placeholder="0" min="0" />
               </Field>
@@ -331,7 +328,7 @@ const AddDeal = () => {
 
             {/* Receipt upload */}
             <Field label="Receipt" hint="JPG, PNG or PDF · max 5 MB">
-              <label className={`flex items-center gap-3 px-3 py-3 border rounded-xl cursor-pointer transition-all active:scale-[0.98]
+              <label className={`flex items-center gap-3 px-4 py-4 border rounded-xl cursor-pointer transition-all active:scale-[0.98]
                 ${dealForm.receipt ? 'border-success/40 bg-success/5' : 'border-base-200 hover:border-info/40 bg-base-50'}`}>
                 <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0
                   ${dealForm.receipt ? 'bg-success/15 text-success' : 'bg-base-200 text-base-content/40'}`}>
@@ -346,7 +343,7 @@ const AddDeal = () => {
               </label>
             </Field>
           </div>
-        </Card>
+        </div>
 
         {/* ── Submit ── */}
         <button

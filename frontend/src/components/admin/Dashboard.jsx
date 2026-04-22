@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import toast from 'react-hot-toast'
 import { Info, Unlock, Package, Weight, Eye, EyeOff, Lock } from 'lucide-react'
+import BackButton from './BackButton'
 
 const Dashboard = () => {
   const [stats, setStats] = useState(null)
@@ -85,7 +86,10 @@ const Dashboard = () => {
 
   return (
     <div className="space-y-6">
-     
+      {/* Mobile Back Button */}
+      <div className="flex justify-between items-center">
+        <BackButton />
+      </div>
       
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2  gap-6">

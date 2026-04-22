@@ -77,31 +77,31 @@ const Login = () => {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-base-200 p-4">
-      <div className="w-full max-w-sm bg-base-100 rounded-2xl border border-base-300 overflow-hidden shadow-sm">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-base-200 via-base-100 to-base-200 p-4">
+      <div className="w-full max-w-md bg-base-100 rounded-3xl border border-base-300/50 shadow-xl backdrop-blur-sm overflow-hidden">
 
         {/* Header banner */}
-        <div className={`${loginType === 'admin' ? 'bg-success/10' : 'bg-info/10'} px-8 py-7 text-center border-b border-base-300`}>
-          <div className={`w-13 h-13 rounded-full ${loginType === 'admin' ? 'bg-success/20 border-success/30' : 'bg-info/20 border-info/30'} border flex items-center justify-center mx-auto mb-3`}>
-            {loginType === 'admin' ? <Home size={22} className={loginType === 'admin' ? 'text-success' : 'text-info'} /> : <User size={22} className="text-info" />}
+        <div className={`${loginType === 'admin' ? 'bg-gradient-to-r from-success/10 to-success/5' : 'bg-gradient-to-r from-info/10 to-info/5'} px-8 py-8 text-center border-b border-base-300/50`}>
+          <div className={`w-16 h-16 rounded-2xl ${loginType === 'admin' ? 'bg-success/20 border-success/30' : 'bg-info/20 border-info/30'} border flex items-center justify-center mx-auto mb-4 shadow-lg`}>
+            {loginType === 'admin' ? <Home size={28} className="text-success" /> : <User size={28} className="text-info" />}
           </div>
-          <h1 className="text-lg font-semibold">
+          <h1 className="text-xl font-bold text-base-content">
             Farmer Trading System
           </h1>
-          <p className="text-xs text-base-content/50 mt-1">
+          <p className="text-sm text-base-content/60 mt-2">
             {loginType === 'admin' ? 'Admin portal - sign in to continue' : 'Farmer portal - enter your mobile number'}
           </p>
         </div>
 
         {/* Login Type Toggle */}
-        <div className="px-7 py-4 border-b border-base-300">
-          <div className="flex bg-base-200 rounded-lg p-1">
+        <div className="px-8 py-5 border-b border-base-300/50">
+          <div className="flex bg-base-200/80 rounded-xl p-1.5 backdrop-blur-sm">
             <button
               type="button"
               onClick={() => handleLoginTypeChange('admin')}
-              className={`flex-1 py-2 px-3 rounded-md text-xs font-medium transition-all ${
+              className={`flex-1 py-3 px-4 rounded-lg text-sm font-medium transition-all duration-200 ${
                 loginType === 'admin' 
-                  ? 'bg-base-100 text-base-content shadow-sm' 
+                  ? 'bg-base-100 text-base-content shadow-md' 
                   : 'text-base-content/60 hover:text-base-content'
               }`}
             >
@@ -110,9 +110,9 @@ const Login = () => {
             <button
               type="button"
               onClick={() => handleLoginTypeChange('farmer')}
-              className={`flex-1 py-2 px-3 rounded-md text-xs font-medium transition-all ${
+              className={`flex-1 py-3 px-4 rounded-lg text-sm font-medium transition-all duration-200 ${
                 loginType === 'farmer' 
-                  ? 'bg-base-100 text-base-content shadow-sm' 
+                  ? 'bg-base-100 text-base-content shadow-md' 
                   : 'text-base-content/60 hover:text-base-content'
               }`}
             >
@@ -122,19 +122,19 @@ const Login = () => {
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="px-7 py-6 space-y-4">
+        <form onSubmit={handleSubmit} className="p-4 lg:p-6 space-y-5">
 
           {loginType === 'admin' ? (
             <>
               {/* Email */}
               <div className="form-control">
-                <label className="label py-0 mb-1.5">
-                  <span className="label-text text-xs font-medium tracking-wide">
+                <label className="label py-0 mb-2">
+                  <span className="label-text text-sm font-medium">
                     Email address
                   </span>
                 </label>
-                <label className="input outline-none flex items-center gap-2 focus-within:border-success focus-within:ring-2 focus-within:ring-success/20">
-                  <Mail size={14} className="text-base-content/40 shrink-0" />
+                <label className="input outline-none flex items-center gap-3 focus-within:border-success focus-within:ring-2 focus-within:ring-success/20 h-12 px-4 w-full">
+                  <Mail size={16} className="text-base-content/40 shrink-0" />
                   <input
                     type="text"
                     name="email"
@@ -149,13 +149,13 @@ const Login = () => {
 
               {/* Password */}
               <div className="form-control">
-                <label className="label py-0 mb-1.5">
-                  <span className="label-text text-xs font-medium tracking-wide">
+                <label className="label py-0 mb-2">
+                  <span className="label-text text-sm font-medium">
                     Password
                   </span>
                 </label>
-                <label className="input outline-none flex items-center gap-2 focus-within:border-success focus-within:ring-2 focus-within:ring-success/20">
-                  <Lock size={14} className="text-base-content/40 shrink-0" />
+                <label className="input outline-none flex items-center gap-3 focus-within:border-success focus-within:ring-2 focus-within:ring-success/20 h-12 px-4 w-full">
+                  <Lock size={16} className="text-base-content/40 shrink-0" />
                   <input
                     type={showPassword ? 'text' : 'password'}
                     name="password"
@@ -168,9 +168,9 @@ const Login = () => {
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="text-base-content/40 hover:text-base-content/70 transition-colors"
+                    className="text-base-content/40 hover:text-base-content/70 transition-colors p-1"
                   >
-                    {showPassword ? <EyeOff size={14} /> : <Eye size={14} />}
+                    {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                   </button>
                 </label>
               </div>
@@ -178,13 +178,13 @@ const Login = () => {
           ) : (
             /* Farmer Login - Mobile Number Only */
             <div className="form-control">
-              <label className="label py-0 mb-1.5">
-                <span className="label-text text-xs font-medium tracking-wide">
+              <label className="label py-0 mb-2">
+                <span className="label-text text-sm font-medium">
                   Mobile Number
                 </span>
               </label>
-              <label className="input outline-none flex items-center gap-2 focus-within:border-info focus-within:ring-2 focus-within:ring-info/20">
-                <Phone size={14} className="text-base-content/40 shrink-0" />
+              <label className="input outline-none flex items-center gap-3 focus-within:border-info focus-within:ring-2 focus-within:ring-info/20 h-12 px-4 w-full">
+                <Phone size={16} className="text-base-content/40 shrink-0" />
                 <input
                   type="tel"
                   name="mobile"
@@ -208,16 +208,19 @@ const Login = () => {
           {/* Submit */}
           <button
             type="submit"
-            className={`btn ${loginType === 'admin' ? 'btn-success' : 'btn-info'} w-full mt-2 text-sm font-medium tracking-wide`}
+            className={`btn ${loginType === 'admin' ? 'btn-success' : 'btn-info'} w-full h-12 text-sm font-medium tracking-wide shadow-lg ${loginType === 'admin' ? 'shadow-success/20' : 'shadow-info/20'} active:scale-[0.98] transition-transform`}
             disabled={loading}
           >
             {loading ? (
               <>
-                <span className="loading loading-spinner loading-xs" />
+                <span className="loading loading-spinner loading-sm" />
                 Signing in...
               </>
             ) : (
-              'Sign in'
+              <>
+                {loginType === 'admin' ? <Home size={16} /> : <User size={16} />}
+                Sign in
+              </>
             )}
           </button>
 
@@ -225,7 +228,7 @@ const Login = () => {
           <button
             type="button"
             onClick={() => navigate('/')}
-            className="btn btn-ghost w-full text-xs text-base-content/60 hover:text-base-content hover:bg-base-200"
+            className="btn btn-ghost w-full h-10 text-sm text-base-content/60 hover:text-base-content hover:bg-base-200 transition-colors"
           >
             <Home size={14} />
             Back to Home

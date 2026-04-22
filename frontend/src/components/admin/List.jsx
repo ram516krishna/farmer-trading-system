@@ -11,6 +11,7 @@ import { Eye, Pencil, Trash2, Download } from 'lucide-react'
 import ViewModal from './ViewModal'
 import DeleteModal from './DeleteModal'
 import EditDealModal from './EditDealModal'
+import BackButton from './BackButton'
 import { deleteProduct, fetchProducts } from '../../api/products'
 
 const columnHelper = createColumnHelper()
@@ -141,7 +142,12 @@ const List = () => {
   }
 
   return (
-    <div className="space-y-4">
+    <div>
+      {/* Mobile Back Button */}
+      <div className="flex justify-between items-center">
+        <BackButton />
+      </div>
+      
       <div className="overflow-x-auto">
         {products.length === 0 ? (
           <div className="text-center py-8">

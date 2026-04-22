@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import toast from 'react-hot-toast'
 import { User, Phone, MapPin } from 'lucide-react'
+import BackButton from './BackButton'
 
 const INITIAL_STATE = {
   name: '',
@@ -44,19 +45,19 @@ const AddFarmer = () => {
   }
 
   return (
-    <div className="w-full mx-auto p-6">
-    
+    <div className="w-full space-y-4">
+      {/* Mobile Back Button */}
+      <div className="flex justify-between items-center">
+        <BackButton />
+      </div>
 
       {/* Form with card styling */}
       
         <form onSubmit={handleSubmit} className="space-y-6">
 
           {/* Personal Information Section */}
-          <div>
-            <h3 className="text-sm font-semibold text-base-content/70 uppercase tracking-wide mb-4 flex items-center gap-2">
-              <div className="w-1 h-4 bg-success rounded-full"></div>
-              Personal Information
-            </h3>
+        
+            
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {/* Name */}
@@ -101,14 +102,11 @@ const AddFarmer = () => {
                 </label>
               </div>
             </div>
-          </div>
+          
 
           {/* Contact Information Section */}
           <div>
-            <h3 className="text-sm font-semibold text-base-content/70 uppercase tracking-wide mb-4 flex items-center gap-2">
-              <div className="w-1 h-4 bg-info rounded-full"></div>
-              Contact Information
-            </h3>
+           
             
             <div className="space-y-4">
               {/* Mobile */}

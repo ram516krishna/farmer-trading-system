@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { User, Package, IndianRupee, Weight, ShoppingBag, Calendar, TrendingUp } from 'lucide-react'
 import toast from 'react-hot-toast'
+import BackButton from '../admin/BackButton'
 
 const FarmerHome = () => {
   const [farmer, setFarmer] = useState(null)
@@ -84,17 +85,22 @@ const FarmerHome = () => {
 
   return (
     <div className="space-y-6">
+      {/* Mobile Back Button */}
+      <div className="flex justify-between items-center">
+        <BackButton />
+      </div>
+
       {/* Header */}
-      <div className="bg-gradient-to-r from-primary/10 to-secondary/10 rounded-2xl p-6 border border-primary/20">
-        <div className="flex items-center gap-4">
-          <div className="w-16 h-16 rounded-full bg-primary/20 border border-primary/30 flex items-center justify-center">
+      <div className="bg-gradient-to-r from-primary/10 to-secondary/10 rounded-2xl p-2 md:p-4 border border-primary/20">
+        <div className="flex items-center gap-2">
+          <div className="w-16 h-16 min-w-16 min-h-16 rounded-full bg-primary/20 border border-primary/30 flex items-center justify-center">
             <User size={28} className="text-primary" />
           </div>
           <div>
-            <h1 className="text-3xl font-bold text-base-content">
+            <h1 className="lg:text-3xl text-xl font-bold text-base-content">
               Welcome, {farmer.name}!
             </h1>
-            <p className="text-base text-base-content/60 mt-1">
+            <p className=" text-xs text-base-content/60 mt-1">
               Here's your farming dashboard and product overview
             </p>
           </div>
@@ -184,7 +190,6 @@ const FarmerHome = () => {
             <table className="table table-zebra w-full">
               <thead>
                 <tr>
-                  <th>Product Name</th>
                   <th>Material</th>
                   <th>Weight</th>
                   <th>Rate</th>
@@ -196,7 +201,7 @@ const FarmerHome = () => {
               <tbody>
                 {products.map((product, index) => (
                   <tr key={product._id || index}>
-                    <td className="font-medium">{product.productName}</td>
+                    
                     <td>
                       <span className="badge badge-ghost badge-sm capitalize">
                         {product.material}

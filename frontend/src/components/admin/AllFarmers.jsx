@@ -11,6 +11,7 @@ import { User, Eye, IndianRupee, Trash2, CreditCard } from 'lucide-react'
 import toast from 'react-hot-toast'
 import { fetchEarnings, fetchFarmers, deleteFarmer } from '../../api/farmers'
 import DeleteModal from './DeleteModal'
+import BackButton from './BackButton'
 
 
 const columnHelper = createColumnHelper()
@@ -80,7 +81,7 @@ const AllFarmers = () => {
   const columns = [
     columnHelper.accessor('name', {
       header: 'Name',
-      cell: info => <span className="font-medium">{info.getValue()}</span>,
+      cell: info => <span className="font-medium text-nowrap">{info.getValue()}</span>,
     }),
     columnHelper.accessor('fatherName', {
       header: 'Father Name',
@@ -90,7 +91,7 @@ const AllFarmers = () => {
     }),
      columnHelper.accessor('address', {
       header: 'Address',
-      cell: ({ getValue }) => <div className="line-clamp-2 w-[180px]">{getValue()}</div>
+      cell: ({ getValue }) => <div>{getValue()}</div>
     }),
     columnHelper.display({
       id: 'earnings',
@@ -104,7 +105,7 @@ const AllFarmers = () => {
             <span className="font-medium text-success">Rs. {amount.toFixed(2)}</span>
           </div>
         ) : (
-          <span className="text-base-content/40 text-sm">Not fetched</span>
+          <span className="text-base-content/40 text-sm">Check</span>
         )
       },
     }),
@@ -163,8 +164,13 @@ const AllFarmers = () => {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="bg-base-100 rounded-2xl border border-base-300 shadow-sm p-6">
+    <div>
+      {/* Mobile Back Button */}
+      <div className="flex justify-between items-center">
+        <BackButton />
+      </div>
+      
+      <div>
         {farmers.length === 0 ? (
           <div className="text-center py-8">
             <User size={48} className="text-base-content/30 mx-auto mb-4" />

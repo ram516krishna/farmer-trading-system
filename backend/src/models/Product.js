@@ -11,7 +11,7 @@ const productSchema = new mongoose.Schema({
   bagQuantity:Number, //2 bora
   status:{
     type: String,
-    enum: ['pending','due', 'paid'],
+    enum: ['pending', 'paid'],
     default: 'pending'
   },
   material:{

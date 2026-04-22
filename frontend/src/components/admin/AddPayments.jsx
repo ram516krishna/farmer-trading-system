@@ -4,6 +4,7 @@ import { CreditCard, IndianRupee } from 'lucide-react'
 import toast from 'react-hot-toast'
 import { fetchFarmers } from '../../api/farmers'
 import { createPayment } from '../../api/payments'
+import BackButton from './BackButton'
 
 const AddPayments = () => {
   const [selectedFarmer, setSelectedFarmer] = useState('')
@@ -87,9 +88,14 @@ const AddPayments = () => {
   }
 
   return (
-    <div className="space-y-4 px-1 pb-8">
+    <div className="space-y-4">
+      {/* Mobile Back Button */}
+      <div className="flex justify-between items-center">
+        <BackButton />
+      </div>
+
       {/* Header Card */}
-      <div className="bg-base-100 rounded-2xl border border-base-300 shadow-sm p-5">
+      
         <div className="flex items-center gap-3 mb-5">
           <div className="bg-success/20 text-success rounded-xl p-2.5">
             <CreditCard size={22} />
@@ -237,7 +243,7 @@ const AddPayments = () => {
             </button>
           </div>
         </form>
-      </div>
+      
 
     </div>
   )

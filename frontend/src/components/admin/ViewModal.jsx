@@ -43,10 +43,7 @@ const ViewModal = ({ product, onClose }) => {
         <div className="divider text-xs text-base-content/50 my-2">Transaction</div>
 
         <div className="grid grid-cols-2 gap-3 text-sm">
-          <div>
-            <p className="text-xs text-base-content/50 uppercase tracking-wide mb-0.5">Product</p>
-            <p className="font-medium">{product.productName || '-'}</p>
-          </div>
+        
           <div>
             <p className="text-xs text-base-content/50 uppercase tracking-wide mb-0.5">Weight</p>
             <p className="font-medium">{product.weight ? `${product.weight} kg` : '-'}</p>

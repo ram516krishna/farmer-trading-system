@@ -1,34 +1,34 @@
-import React from 'react'
 import { Outlet } from 'react-router-dom'
 import FarmerSidebar from './FarmerSidebar'
 
 const FarmerLayout = () => {
   return (
     <div className="drawer lg:drawer-open">
-      <input id="my-drawer" type="checkbox" className="drawer-toggle" />
-      
-      {/* Mobile menu button */}
-      <label htmlFor="my-drawer" className="drawer-overlay lg:hidden">
-        <div className="fixed top-4 left-4 z-40">
-          <label htmlFor="my-drawer" className="btn btn-primary btn-sm">
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-            </svg>
-          </label>
-        </div>
-      </label>
-
-      {/* Main content */}
-      <div className="drawer-content flex-1">
-        <main className="min-h-screen bg-base-200">
-          <div className="p-4 lg:p-6 ">
-            <Outlet />
+      <input id="my-drawer-3" type="checkbox" className="drawer-toggle" />
+      <div className="drawer-content flex flex-col">
+        {/* Header */}
+        <div className="navbar bg-base-100 shadow-sm">
+          <div className="flex-none lg:hidden">
+            <label htmlFor="my-drawer-3" className="btn btn-square btn-ghost">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className="inline-block w-6 h-6 stroke-current">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16"></path>
+              </svg>
+            </label>
           </div>
-        </main>
+         
+        </div>
+        
+        {/* Main Content */}
+        <div className="flex-1 p-6">
+          <Outlet />
+        </div>
       </div>
-
+      
       {/* Sidebar */}
-      <FarmerSidebar />
+      <div className="drawer-side">
+        <label htmlFor="my-drawer-3" aria-label="close sidebar" className="drawer-overlay"></label>
+        <FarmerSidebar />
+      </div>
     </div>
   )
 }

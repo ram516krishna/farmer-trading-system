@@ -82,41 +82,15 @@ const EditDealModal = ({ product, onSave, onClose }) => {
         <h3 className="font-bold text-lg mb-4">Edit Deal</h3>
 
         <div className="grid grid-cols-1 gap-4">
-          {/* Farmer Information (Read-only) */}
-          <div>
-            <h4 className="text-sm font-semibold text-base-content/70 uppercase tracking-wide mb-3 flex items-center gap-2">
-              <div className="w-1 h-4 bg-info rounded-full"></div>
-              Farmer Information
-            </h4>
-            <div className="grid grid-cols-1 gap-3 text-sm bg-base-100/50 rounded-lg p-4">
-              <div>
-                <span className="text-base-content/60 uppercase tracking-wide">Name:</span>
-                <span className="font-medium ml-1">{product.farmer?.name || 'Not available'}</span>
-              </div>
-              <div>
-                <span className="text-base-content/60 uppercase tracking-wide">Mobile:</span>
-                <span className="font-medium ml-1">{product.farmer?.mobile || 'Not available'}</span>
-              </div>
-              <div>
-                <span className="text-base-content/60 uppercase tracking-wide">Address:</span>
-                <span className="font-medium ml-1">{product.farmer?.address || 'Not available'}</span>
-              </div>
-            </div>
-          </div>
-
+        
           {/* Deal Details (Editable) */}
           <div>
-            <h4 className="text-sm font-semibold text-base-content/70 uppercase tracking-wide mb-3 flex items-center gap-2">
-              <div className="w-1 h-4 bg-warning rounded-full"></div>
-              Deal Details
-            </h4>
+          
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               {[
-                { label: 'Product Name', name: 'productName', type: 'text' },
                 { label: 'Weight (kg)', name: 'weight', type: 'number' },
                 { label: 'Rate (₹/kg)', name: 'rate', type: 'number' },
                 { label: 'Bag Quantity', name: 'bagQuantity', type: 'number' },
-                { label: 'Material', name: 'material', type: 'text' },
               ].map(({ label, name, type }) => (
                 <div key={name} className="form-control">
                   <label className="label py-0 mb-2">
@@ -130,22 +104,38 @@ const EditDealModal = ({ product, onSave, onClose }) => {
                       value={form[name] || ''}
                       onChange={handleChange}
                       placeholder={`Enter ${label.toLowerCase()}`}
-                      className="grow text-sm bg-transparent outline-none placeholder:text-base-content/30"
+                      className="grow text-sm outline-none placeholder:text-base-content/30"
                       step={type === 'number' ? '0.1' : undefined}
                       min="0"
                     />
                   </label>
                 </div>
               ))}
+              
+              {/* Material Select Field */}
+              <div className="form-control">
+                <label className="label py-0 mb-2">
+                  <span className="label-text text-sm font-medium">Material</span>
+                </label>
+                <select
+                  name="material"
+                  value={form.material || ''}
+                  onChange={handleChange}
+                  className="select select-bordered text-sm focus:border-warning focus:ring-2 focus:ring-warning/20 focus:outline-none w-full"
+                >
+                  <option value="">Select Material</option>
+                  {MATERIALS.map((material) => (
+                    <option key={material.value} value={material.value}>
+                      {material.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
             </div>
           </div>
 
           {/* Status */}
           <div>
-            <h4 className="text-sm font-semibold text-base-content/70 uppercase tracking-wide mb-3 flex items-center gap-2">
-              <div className="w-1 h-4 bg-success rounded-full"></div>
-              Payment Status
-            </h4>
             <div className="form-control">
               <label className="label py-0 mb-2">
                 <span className="label-text text-sm font-medium">Status</span>
@@ -154,7 +144,7 @@ const EditDealModal = ({ product, onSave, onClose }) => {
                 name="status"
                 value={form.status || 'pending'}
                 onChange={handleChange}
-                className="select select-bordered text-sm focus:border-warning focus:ring-2 focus:ring-warning/20 focus:outline-none w-full bg-base-100/50 transition-all"
+                className="select select-bordered text-sm focus:border-warning focus:ring-2 focus:ring-warning/20 focus:outline-none w-full "
               >
                 <option value="pending">Pending</option>
                 <option value="paid">Paid</option>
