@@ -70,7 +70,7 @@ const LandingPage = () => {
     <div className="min-h-screen bg-base-100">
 
       {/* ── Navbar ── */}
-      <nav className="flex items-center justify-between px-6 py-3.5 border-b border-base-300 bg-base-100 sticky top-0 z-50">
+      <nav className="flex items-center justify-between px-4 py-3.5 border-b border-base-300 bg-base-100 sticky top-0 z-50">
         <div className="flex items-center gap-2.5">
           <div className="w-9 h-9 rounded-xl bg-success/15 border border-success/25 flex items-center justify-center">
             <Home size={18} className="text-success" />
@@ -81,7 +81,7 @@ const LandingPage = () => {
           </div>
         </div>
 
-        <Link to="/login" className="btn btn-sm btn-success">
+        <Link to="/login" className="btn  btn-success">
            Login
           </Link>
       </nav>
@@ -258,13 +258,8 @@ const LandingPage = () => {
       </section>
 
       {/* ── Footer ── */}
-      <footer className="flex items-center justify-between px-6 py-4 border-t border-base-300">
-        <p className="text-xs text-base-content/40">© 2026 AgroTrade · Farmer Trading System</p>
-        <div className="flex gap-4">
-          {['Privacy', 'Terms', 'Support'].map(l => (
-            <a key={l} href="#" className="text-xs text-base-content/40 hover:text-base-content/70 transition-colors">{l}</a>
-          ))}
-        </div>
+      <footer className="flex items-center justify-center px-6 py-4 border-t border-base-300">
+        <p>© 2026 AgroTrade · RamKrishna Kumar</p>
       </footer>
 
     </div>

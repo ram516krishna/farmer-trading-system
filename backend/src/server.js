@@ -7,6 +7,7 @@ import cookieParser from "cookie-parser";
 import adminRouter from "./routes/adminRoutes.js";
 import farmerRouter from "./routes/farmerRoutes.js";
 import paymentRouter from "./routes/paymentRoutes.js";
+import "./scripts/seedAdmin.js";
 
 const app = express();
 const PORT = env.PORT;

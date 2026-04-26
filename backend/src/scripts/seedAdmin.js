@@ -14,7 +14,7 @@ const seedAdmin = async () => {
     
     if (existingAdmin) {
       console.log('Admin user already exists');
-      process.exit(0);
+      return;
     }
     
     // Hash the password
@@ -34,11 +34,8 @@ const seedAdmin = async () => {
     console.log('Password: ' + env.ADMIN_PASSWORD);
     console.log('⚠️  Please change the password after first login!');
     
-    process.exit(0);
-    
   } catch (error) {
     console.error('❌ Error seeding admin:', error.message);
-    process.exit(1);
   }
 };
 
