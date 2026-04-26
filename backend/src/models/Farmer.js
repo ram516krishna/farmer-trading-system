@@ -15,6 +15,6 @@ const farmerSchema = new mongoose.Schema({
     required: true,
     unique: true
   },
-},{timestamps: true, versionKey: false});
+},{timestamps: true});
 
 export default mongoose.model("Farmer", farmerSchema);

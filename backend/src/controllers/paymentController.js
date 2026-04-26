@@ -4,7 +4,7 @@ import Payment from "../models/Payment.js";
 
 export const createPayment = async (req, res) => {
     try {
-        const { farmerId, paidAmount, reason, totalAmount, paymentDate } = req.body;
+        const { farmerId, advancePayment, reason, paymentDate, remainingPayment } = req.body;
 
         // Validate farmer exists
         const farmer = await Farmer.findById(farmerId);
@@ -16,11 +16,10 @@ export const createPayment = async (req, res) => {
         // Create payment with updated remaining balance
         const payment = await Payment.create({
             farmer: farmerId,
-            paidAmount,
+            advancePayment,
             reason,
-            totalAmount,
             paymentDate,
-            remainingBalance: parseInt(totalAmount) - parseInt(paidAmount)
+            remainingPayment: remainingPayment || 0
         });
 
         res.status(201).json({ data: payment, success: true });

@@ -6,11 +6,7 @@ const paymentSchema = new mongoose.Schema({
         ref: 'Farmer',
         required: true
     },
-    totalAmount: {
-        type: Number,
-        required: true
-    },
-    paidAmount: {
+    advancePayment: {
         type: Number,
         required: true
     },
@@ -22,10 +18,9 @@ const paymentSchema = new mongoose.Schema({
         type: Date,
         default: Date.now
     },
-    remainingBalance: {
-        type: Number,
-        required: true
+    remainingPayment: {
+       type: Number
     }
-}, { timestamps: true, versionKey: false });
+}, { timestamps: true});
 
 export default mongoose.model("Payment", paymentSchema);

@@ -173,6 +173,18 @@ const Login = () => {
                     {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                   </button>
                 </label>
+                <label className="label py-0">
+                  <div className="flex justify-between items-center w-full">
+                    <span></span>
+                    <button
+                      type="button"
+                      onClick={() => navigate('/forgot-password')}
+                      className="label-text-alt text-xs text-success hover:text-success/80 transition-colors"
+                    >
+                      Forgot password?
+                    </button>
+                  </div>
+                </label>
               </div>
             </>
           ) : (

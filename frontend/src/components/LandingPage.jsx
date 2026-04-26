@@ -48,10 +48,10 @@ const STEPS = [
 ]
 
 const MATERIALS = [
-  { name: 'Makka', desc: 'Corn / Maize', color: 'bg-warning/10 border-warning/20', icon: 'text-warning', image: '/4.jpeg' },
-  { name: 'Gehu', desc: 'Wheat', color: 'bg-success/10 border-success/20', icon: 'text-success', image: '/5.jpeg' },
+  { name: 'Haldi', desc: 'Corn / Maize', color: 'bg-warning/10 border-warning/20', icon: 'text-warning', image: '/4.jpeg' },
+  { name: 'Makka', desc: 'Wheat', color: 'bg-success/10 border-success/20', icon: 'text-success', image: '/5.jpeg' },
   { name: 'Dhan', desc: 'Paddy / Rice', color: 'bg-teal-50 border-teal-200', icon: 'text-teal-600', image: '/1.jpeg' },
-  { name: 'Haldi', desc: 'Turmeric', color: 'bg-warning/10 border-warning/20', icon: 'text-amber-600', image: '/2.jpeg' },
+  { name: 'Gehu', desc: 'Turmeric', color: 'bg-warning/10 border-warning/20', icon: 'text-amber-600', image: '/gehu.webp' },
 ]
 
 const HERO_IMAGES = ['/1.jpeg', '/2.jpeg', '/3.jpeg']
@@ -120,11 +120,7 @@ const LandingPage = () => {
           </p>
 
           <div className="flex items-center justify-center gap-4 mb-16">
-            <button className="btn btn-success lg:btn-lg btn-sm text-sm shadow-lg">
-              
-              <Phone size={16} />
-              9631089689
-            </button>
+           
             <button className="btn btn-outline bg-white lg:btn-lg btn-sm text-sm shadow-lg">
               <Mail size={16} />
               rkm913597@gmail.com

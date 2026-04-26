@@ -11,6 +11,8 @@ const FarmerPayments = lazy(() => import('./components/admin/FarmerPayments'))
 const List = lazy(() => import('./components/admin/List'))
 const Dashboard = lazy(() => import('./components/admin/Dashboard'))
 const Login = lazy(() => import('./components/admin/Login'))
+const ForgotPassword = lazy(() => import('./components/admin/ForgotPassword'))
+const ResetPassword = lazy(() => import('./components/admin/ResetPassword'))
 const ProtectedRoute = lazy(() => import('./components/admin/ProtectedRoute'))
 const AllFarmers = lazy(() => import('./components/admin/AllFarmers'))
 
@@ -38,6 +40,20 @@ const App = () => {
         <Route path="/login" element={
           <Suspense fallback={<LoadingSpinner size="lg" text="Loading login..." />}>
             <Login />
+          </Suspense>
+        } />
+        
+        {/* Forgot Password Route */}
+        <Route path="/forgot-password" element={
+          <Suspense fallback={<LoadingSpinner size="lg" text="Loading forgot password..." />}>
+            <ForgotPassword />
+          </Suspense>
+        } />
+        
+        {/* Reset Password Route */}
+        <Route path="/reset-password/:token" element={
+          <Suspense fallback={<LoadingSpinner size="lg" text="Loading reset password..." />}>
+            <ResetPassword />
           </Suspense>
         } />
         
