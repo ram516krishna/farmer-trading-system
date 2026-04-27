@@ -4,6 +4,7 @@ import {
   Home, Users, IndianRupee, Monitor, CheckSquare,
   Wheat, ArrowRight, Phone, Mail
 } from 'lucide-react'
+import InstallButton from './IntallButton'
 
 const FEATURES = [
   {
@@ -80,6 +81,7 @@ const LandingPage = () => {
             <p className="text-xs text-base-content/50">Farmer Trading System</p>
           </div>
         </div>
+        <InstallButton />
 
         <Link to="/login" className="btn  btn-success">
            Login
