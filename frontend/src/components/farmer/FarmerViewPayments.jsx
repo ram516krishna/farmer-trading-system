@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { IndianRupee, Calendar } from "lucide-react";
-import toast from "react-hot-toast";
 import { getFarmerPayments } from "../../api/payments";
 import LoadingSpinner from "../LoadingSpinner";
 import BackButton from "../admin/BackButton";
@@ -75,9 +74,8 @@ const FarmerViewPayments = () => {
               <thead>
                 <tr>
                   <th>Date</th>
-                  <th>Total Amount</th>
-                  <th>Paid Amount</th>
-                  <th>Remaining Balance</th>
+                  <th>Advance Payment</th>
+                  <th>Remaining</th>
                   <th>Reason</th>
                 </tr>
               </thead>
@@ -103,15 +101,7 @@ const FarmerViewPayments = () => {
                       <div className="flex items-center gap-1">
                         <IndianRupee size={14} />
                         <span className="font-medium">
-                          {payment.totalAmount.toFixed(2)}
-                        </span>
-                      </div>
-                    </td>
-                    <td>
-                      <div className="flex items-center gap-1">
-                        <IndianRupee size={14} className="text-success" />
-                        <span className="font-medium text-success">
-                          {payment.paidAmount.toFixed(2)}
+                          {payment?.advancePayment?.toFixed(2)}
                         </span>
                       </div>
                     </td>
@@ -119,7 +109,7 @@ const FarmerViewPayments = () => {
                       <div className="flex items-center gap-1">
                         <IndianRupee size={14} className="text-warning" />
                         <span className="font-medium text-warning">
-                          {payment.remainingBalance.toFixed(2)}
+                          {payment?.remainingPayment?.toFixed(2) || 0}
                         </span>
                       </div>
                     </td>

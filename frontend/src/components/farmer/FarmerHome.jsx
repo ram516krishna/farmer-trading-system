@@ -9,8 +9,8 @@ const FarmerHome = () => {
   const [loading, setLoading] = useState(true)
   const [stats, setStats] = useState({
     totalProducts: 0,
-    totalWeight: 0,
-    totalEarnings: 0,
+    totalWeight: 0, 
+    totalEarnings:0,
     paidDeals: 0,
     pendingDeals: 0,
   })
@@ -56,7 +56,7 @@ const FarmerHome = () => {
       totalWeight: products.reduce((sum, p) => sum + (p.weight || 0), 0),
       totalEarnings: products
         .filter(p => p.status === 'paid')
-        .reduce((sum, p) => sum + (p.weight * p.rate * p.bagQuantity || 0), 0),
+        .reduce((sum, p) => sum + (p.weight * p.rate || 0), 0),
       paidDeals: products.filter(p => p.status === 'paid').length,
       pendingDeals: products.filter(p => p.status === 'pending').length,
     }

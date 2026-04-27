@@ -256,7 +256,7 @@ const Dashboard = () => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Enter password"
-                  className="input input-bordered w-full"
+                  className="input input-primary outline-none w-full"
                   autoFocus
                 />
                 {passwordError && (

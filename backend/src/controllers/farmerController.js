@@ -92,7 +92,7 @@ export const getFarmerProducts = async (req, res) => {
 export const getFarmerEarnings = async (req, res) => {
     try {
         const products = await Product.find({ farmer: req.params.id });
-        const totalEarnings = products.reduce((total, product) => total + product.rate * product.weight * product.bagQuantity, 0);
+        const totalEarnings = products.reduce((total, product) => total + product.rate * product.weight, 0);
         res.status(200).json({ data: totalEarnings, success: true });
     } catch (error) {
         res.status(500).json({ message: error.message, success: false });

@@ -67,9 +67,9 @@ export const getDashboardStats = async (req, res) => {
         
         // Calculate total earnings (weight * rate * bagQuantity for paid deals)
         const totalEarnings = products
-            .filter(product => product.status === 'paid' && product.weight && product.rate && product.bagQuantity)
-            .reduce((total, product) => total + (product.weight * product.rate * product.bagQuantity), 0);
-        
+            .filter(product => product.status === 'paid' && product.weight && product.rate)
+            .reduce((total, product) => total + (product.weight * product.rate), 0);
+            
         // Calculate total bag quantity
         const totalBagQuantity = products
             .filter(product => product.bagQuantity)

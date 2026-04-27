@@ -15,7 +15,7 @@ const FarmerPayments = () => {
   const limit = 10
 
   // Fetch payments for the specific farmer (includes farmer details in response)
-  const { data: paymentsData, isLoading: loadingPayments } = useQuery({
+  const { data: paymentsData, isLoading: loadingPayments, refetch } = useQuery({
     queryKey: ['farmer-payments', farmerId, page],
     queryFn: () => getFarmerPayments(farmerId, { page, limit }),
     enabled: !!farmerId,
@@ -42,8 +42,7 @@ const FarmerPayments = () => {
     try {
       await deletePayment(paymentId)
       toast.success('Payment deleted successfully')
-      // Refetch payments
-      window.location.reload()
+     refetch()
     } catch (error) {
       toast.error(error.message || 'Failed to delete payment')
     } finally {
@@ -141,9 +140,8 @@ const FarmerPayments = () => {
                 <thead>
                   <tr>
                     <th>Date</th>
-                    <th>Total Amount</th>
-                    <th>Paid Amount</th>
-                    <th>Remaining Balance</th>
+                    <th>Advance Payment</th>
+                    <th>Remaining Payment</th>
                     <th>Reason</th>
                     <th>Actions</th>
                   </tr>
@@ -167,7 +165,7 @@ const FarmerPayments = () => {
                         <div className="flex items-center gap-1">
                           <IndianRupee size={14} />
                           <span className="font-medium">
-                            {payment.totalAmount.toFixed(2)}
+                            {payment.advancePayment ? payment.advancePayment.toFixed(2) : '0.00'}
                           </span>
                         </div>
                       </td>
@@ -175,18 +173,11 @@ const FarmerPayments = () => {
                         <div className="flex items-center gap-1">
                           <IndianRupee size={14} className="text-success" />
                           <span className="font-medium text-success">
-                            {payment.paidAmount.toFixed(2)}
+                            {payment.remainingPayment ? payment.remainingPayment.toFixed(2) : '0.00'}
                           </span>
                         </div>
                       </td>
-                      <td>
-                        <div className="flex items-center gap-1">
-                          <IndianRupee size={14} className="text-warning" />
-                          <span className="font-medium text-warning">
-                            {payment.remainingBalance.toFixed(2)}
-                          </span>
-                        </div>
-                      </td>
+                     
                       <td className="max-w-xs">
                         <div className="truncate" title={payment.reason}>
                           {payment.reason}
@@ -244,7 +235,7 @@ const FarmerPayments = () => {
         isOpen={!!deleteModal}
         item={deleteModal}
         title="Delete Payment?"
-        message={`This will permanently remove this payment of ${deleteModal?.paidAmount || 'this amount'} and all associated records. This action cannot be undone.`}
+        message={`This will permanently remove this payment of ${deleteModal?.advancePayment || 'this amount'} and all associated records. This action cannot be undone.`}
         confirmText="Delete Payment"
         onConfirm={handleDeletePayment}
         onClose={closeDeleteModal}
