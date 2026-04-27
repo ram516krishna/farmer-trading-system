@@ -4,7 +4,7 @@ import {
   Home, Users, IndianRupee, Monitor, CheckSquare,
   Wheat, ArrowRight, Phone, Mail
 } from 'lucide-react'
-import InstallButton from './IntallButton'
+import InstallButton from './InstallButton'
 
 const FEATURES = [
   {
